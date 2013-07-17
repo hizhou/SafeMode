@@ -1,6 +1,6 @@
 <?php 
 namespace PHPSafeMode\RunTime\Resource;
 
-class Memory {
+class Memory extends ResourceBase {
 	
 }

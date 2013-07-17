@@ -8,19 +8,6 @@ use PHPSafeMode\RunTime\Resource\Storage;
 use PHPSafeMode\RunTime\Resource\Memory;
 
 class RunTime {
-	private static $_instance;
-	
-	/**
-	 * @return RunTime
-	 */
-	public static function instance() {
-		if (! self::$_instance) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
-	private function __construct() { }
-	
 	private $cpu;
 	private $api;
 	private $code;
