@@ -1,5 +1,5 @@
 <?php
-namespace PHPSafeMode;
+namespace PHPSafeMode\Inspector;
 
 class Inspector {
 	private $originalCode;
