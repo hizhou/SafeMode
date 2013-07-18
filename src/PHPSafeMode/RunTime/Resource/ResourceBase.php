@@ -7,4 +7,8 @@ class ResourceBase {
 	public function getBootstrapCodes() {
 		return $this->bootstrapCodes;
 	}
+	
+	protected function appendBootstrapCode($codeText) {
+		$this->bootstrapCodes[] = $codeText;
+	}
 }

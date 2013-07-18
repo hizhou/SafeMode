@@ -12,6 +12,9 @@ class ScriptRunner {
 		
 		exec("cd " . $dir);
 		*/
-		return exec("php -f " . $path);
+		$output = array();
+		exec("php -f " . $path, $output);
+		
+		return implode("\r\n", $output);
 	}
 }

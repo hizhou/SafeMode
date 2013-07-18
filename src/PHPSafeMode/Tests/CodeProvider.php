@@ -11,7 +11,8 @@ class CodeProvider {
 	
 	public function getCode($specify) {
 		$file = $this->basePath . '/' . $specify . '.php';
-		if (!file_exists($file)) return ;
+		if (!file_exists($file)) throw new TestException('code file not exsits: ' . $file);
+		
 		return file_get_contents($file);
 	}
 }

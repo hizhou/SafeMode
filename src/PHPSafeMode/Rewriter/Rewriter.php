@@ -7,23 +7,23 @@ class Rewriter {
 	/**
 	 * @var \PHPParser_NodeVisitorAbstract[]
 	 */
-	private $writers = array();
+	private $convertors = array();
 	
 	
 	public function __construct($code) {
 		$this->originalCode = $code;
 	}
 	
-	public function addWriter(\PHPParser_NodeVisitorAbstract $writer) {
-		$this->writers[] = $writer;
+	public function addConvertor(\PHPParser_NodeVisitorAbstract $convertor) {
+		$this->convertors[] = $convertor;
 	}
 	
 	public function generateCode() {
 		$nodes = $this->parseCode($this->originalCode);
 		
-		if ($this->writers) {
+		if ($this->convertors) {
 			$traverser = new \PHPParser_NodeTraverser;
-			foreach ($this->writers as $visitor) {
+			foreach ($this->convertors as $visitor) {
 				$traverser->addVisitor($visitor);
 			}
 			

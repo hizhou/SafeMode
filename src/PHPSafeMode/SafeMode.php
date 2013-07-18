@@ -4,6 +4,7 @@ namespace PHPSafeMode;
 use PHPSafeMode\RunTime\RunTime;
 use PHPSafeMode\Rewriter\Rewriter;
 use PHPSafeMode\Rewriter\Bootstrap;
+use PHPSafeMode\Rewriter\Convertor\FunctionCall;
 
 class SafeMode {
 	private $runTime;
@@ -29,13 +30,18 @@ class SafeMode {
 		$rewriter = new Rewriter($code);
 		
 		//...
+		
 		//generate bootstrap
 		$this->bootstrap()->addCodes($this->runTime()->api()->getBootstrapCodes());
 		$this->bootstrap()->addCodes($this->runTime()->code()->getBootstrapCodes());
 		$this->bootstrap()->addCodes($this->runTime()->cpu()->getBootstrapCodes());
 		$this->bootstrap()->addCodes($this->runTime()->memory()->getBootstrapCodes());
 		$this->bootstrap()->addCodes($this->runTime()->storage()->getBootstrapCodes());
+		
 		//...
+		if ($this->runTime()->api()->hasDisableFunctions()) {
+			$rewriter->addConvertor(new FunctionCall());
+		}
 		
 		$bootstrapSaveTo = $this->bootstrap()->saveTo($this->bootstrapPath . '/' . $bootstrapSaveTo);
 		
