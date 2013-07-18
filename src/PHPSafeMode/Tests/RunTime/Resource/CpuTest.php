@@ -2,21 +2,19 @@
 namespace PHPSafeMode\Tests\RunTime\Resource;
 
 use PHPSafeMode\Tests\BaseTestCase;
-use PHPSafeMode\SafeMode;
 
 class CpuTest extends BaseTestCase {
 	public function testSetTimeLimit() {
-		$mode = $this->getSafeMode();
-		$mode->runTime()->cpu()->setTimeLimit(2);
-		$mode->generateSafeCode($this->getCode(), 'index.php', $this->getProvider()->getBootstrapPath() . 'b.php');
-	}
-	
-	protected function getSafeMode() {
-		return new SafeMode($this->getProvider()->getSafePath());
-	}
-	
-	private function getCode() {
-		return '<?php while (1) { echo 111; }';
+		$limit = 2;
+		
+		$mode = $this->getNewSafeMode();
+		$mode->runTime()->cpu()->setTimeLimit($limit);
+		
+		$file = $mode->generateSafeCode($this->getCode('cpu/endless_loop'), 'index.php', 'bootstrap.php');
+		
+		$result = $this->scriptRunner()->run($file);
+		
+		$this->assertContains("Fatal error: Maximum execution time of $limit seconds", $result);
 	}
 }
 

@@ -3,3 +3,4 @@
 .buildpath
 .project
 .settings/
+/src/PHPSafeMode/Tests/data/
