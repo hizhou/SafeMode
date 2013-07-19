@@ -5,10 +5,10 @@ use PHPSafeMode\RunTime\RunTime;
 use PHPSafeMode\Rewriter\Rewriter;
 use PHPSafeMode\Rewriter\Bootstrap;
 use PHPSafeMode\Rewriter\Convertor\FunctionCall;
+use PHPSafeMode\Rewriter\Convertor\FileInclude;
 
 class SafeMode {
 	private $runTime;
-	private $bootstrap;
 	
 	private $safePath;
 	private $bootstrapPath;
@@ -28,22 +28,26 @@ class SafeMode {
 	
 	public function generateSafeCode($code, $saveTo, $bootstrapSaveTo) {
 		$rewriter = new Rewriter($code);
+		$bootstrap = new Bootstrap();
 		
 		//...
 		
 		//generate bootstrap
-		$this->bootstrap()->addCodes($this->runTime()->api()->getBootstrapCodes());
-		$this->bootstrap()->addCodes($this->runTime()->code()->getBootstrapCodes());
-		$this->bootstrap()->addCodes($this->runTime()->cpu()->getBootstrapCodes());
-		$this->bootstrap()->addCodes($this->runTime()->memory()->getBootstrapCodes());
-		$this->bootstrap()->addCodes($this->runTime()->storage()->getBootstrapCodes());
+		$bootstrap->addCodes($this->runTime()->api()->getBootstrapCodes());
+		$bootstrap->addCodes($this->runTime()->code()->getBootstrapCodes());
+		$bootstrap->addCodes($this->runTime()->cpu()->getBootstrapCodes());
+		$bootstrap->addCodes($this->runTime()->memory()->getBootstrapCodes());
+		$bootstrap->addCodes($this->runTime()->storage()->getBootstrapCodes());
 		
 		//...
-		if ($this->runTime()->api()->hasDisableFunctions()) {
+		if ($this->runTime()->api()->hasDisableFunctions() || $this->runTime()->api()->hasReplaceFunctions()) {
 			$rewriter->addConvertor(new FunctionCall());
 		}
+		if ($this->runTime()->code()->hasSetSafePath() || $this->runTime()->code()->hasSetIncludeTypes()) {
+			$rewriter->addConvertor(new FileInclude());
+		}
 		
-		$bootstrapSaveTo = $this->bootstrap()->saveTo($this->bootstrapPath . '/' . $bootstrapSaveTo);
+		$bootstrapSaveTo = $bootstrap->saveTo($this->bootstrapPath . '/' . $bootstrapSaveTo);
 		
 		$code = '<?php ';
 		if ($bootstrapSaveTo) $code .= "require_once('$bootstrapSaveTo'); ";
@@ -59,12 +63,5 @@ class SafeMode {
 	
 	public function runTime() {
 		return $this->runTime;
-	}
-	
-	private function bootstrap() {
-		if (!$this->bootstrap) {
-			$this->bootstrap = new Bootstrap();
-		}
-		return $this->bootstrap;
 	}
 }

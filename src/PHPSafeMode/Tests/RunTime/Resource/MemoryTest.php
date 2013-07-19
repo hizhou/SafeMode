@@ -5,14 +5,17 @@ use PHPSafeMode\Tests\BaseTestCase;
 
 class MemoryTest extends BaseTestCase {
 	public function testSetMemoryLimit() {
-		$limit = 2;
+		$limit = 1;
+		$codeSpecify = 'memory/use_' . $limit . '_m';
+		
+		$this->assertNotContains("Fatal error:", $this->runInOriginalMode($codeSpecify));
 		
 		$mode = $this->getNewSafeMode();
 		$mode->runTime()->memory()->setMemoryLimit($limit);
 		
-		$file = $mode->generateSafeCode($this->getCode('memory/use_' . $limit . '_m'), 'index.php', 'bootstrap.php');
-		
-		$result = $this->scriptRunner()->run($file);
-		$this->assertContains("Fatal error: Allowed memory size of", $result);
+		$this->assertContains(
+			"Fatal error: Allowed memory size of", 
+			$this->runInSafeMode($mode, $codeSpecify)
+		);
 	}
 }

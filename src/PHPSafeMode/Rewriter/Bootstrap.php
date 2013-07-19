@@ -10,7 +10,7 @@ class Bootstrap {
 			return ;
 		}
 		
-		foreach ($codes as $code) {
+		foreach ($codes as $specify => $code) {
 			$this->codes[] = $code;
 		}
 	}

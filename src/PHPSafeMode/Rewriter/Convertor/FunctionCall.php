@@ -18,15 +18,14 @@ class FunctionCall extends \PHPParser_NodeVisitorAbstract {
 			}
 			
 			$args = array();
-			$args[] = $name;//new \PHPParser_Node_Arg();
+			$args[] = $name;
 			
-			//\PHPParser_Node_Expr;
 			foreach ($node->args as $arg) {
 				$args[] = $arg;
 			}
 			
 			$newNode = new \PHPParser_Node_Expr_FuncCall(
-				new \PHPParser_Node_Name(array('safemode_function_call')),
+				new \PHPParser_Node_Name_FullyQualified(array('safemode_function_call')),
 				$args
 			);
 			return $newNode;

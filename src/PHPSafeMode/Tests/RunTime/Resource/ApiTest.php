@@ -2,32 +2,60 @@
 namespace PHPSafeMode\Tests\RunTime\Resource;
 
 use PHPSafeMode\Tests\BaseTestCase;
+use PHPSafeMode\SafeMode;
 
 class ApiTest extends BaseTestCase {
-	public function testDisableFunctionsObvious() {
-		$disabled = 'exec';
-		
-		$mode = $this->getNewSafeMode();
-		$mode->runTime()->api()->disableFunctions('exec');
-		
-		$file = $mode->generateSafeCode($this->getCode('api/exec_obvious'), 'index.php', 'bootstrap.php');
-			
-		$result = $this->scriptRunner()->run($file);
-		
-		//echo $result;
-		$this->assertContains("Fatal error: Uncaught exception 'Exception' with message 'function disabled: $disabled'", $result);
+	public function testDisableFunction() {
+		$disabledList = array('strtoupper', 'substr');
+
+		$specifies = $this->codeProvider()->findSpecifies('api/function_call_*');
+		foreach ($disabledList as $disabled) {
+			foreach ($specifies as $codeSpecify) {
+				$this->assertNotContains("Fatal error:", $this->runInOriginalMode($codeSpecify));
+					
+				$mode = $this->getNewSafeMode();
+				$mode->runTime()->api()->disableFunctions($disabled);
+				$this->assertContains(
+					"Fatal error: Uncaught exception 'Exception' with message 'function disabled: $disabled'",
+					$this->runInSafeMode($mode, $codeSpecify)
+				);
+			}
+		}
 	}
 	
-	public function testDisableFunctionsVar() {
-		$disabled = 'exec';
+	public function testDisableFunctions() {
+		$disabled = array('strtoupper', 'substr');
 		
-		$mode = $this->getNewSafeMode();
-		$mode->runTime()->api()->disableFunctions('exec');
+		$codes = $this->codeProvider()->findSpecifies('api/function_call_*');
+		foreach ($codes as $codeSpecify) {
+			$this->assertNotContains("Fatal error:", $this->runInOriginalMode($codeSpecify));
+			
+			$mode = $this->getNewSafeMode();
+			$mode->runTime()->api()->disableFunctions($disabled);
+			$this->assertContains(
+				"Fatal error: Uncaught exception 'Exception' with message 'function disabled: ",
+				$this->runInSafeMode($mode, $codeSpecify)
+			);
+		}
+	}
+	
+	public function testReplaceFunctions() {
+		$replaceCode = $this->codeProvider()->getCode('api/function_for_replace');
+		$replaces = array(
+			'strtoupper' => $replaceCode,
+			'substr' => $replaceCode,
+		);
 		
-		$file = $mode->generateSafeCode($this->getCode('api/exec_var'), 'index.php', 'bootstrap.php');
+		$codes = $this->codeProvider()->findSpecifies('api/function_call_*');
+		foreach ($codes as $codeSpecify) {
+			$this->assertNotContains("Fatal error:", $this->runInOriginalMode($codeSpecify));
 			
-		$result = $this->scriptRunner()->run($file);
+			$mode = $this->getNewSafeMode();
+			$mode->runTime()->api()->replaceFunctions($replaces);
 			
-		$this->assertContains("Fatal error: Uncaught exception 'Exception' with message 'function disabled: $disabled'", $result);
+			$this->assertContains("function replaced", 
+				$this->runInSafeMode($mode, $codeSpecify)
+			);
+		}
 	}
 }
