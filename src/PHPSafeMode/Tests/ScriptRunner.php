@@ -11,9 +11,8 @@ class ScriptRunner {
 	public function run($path, $isDebug) {
 		if (!file_exists($path)) throw new \Exception('script not exists: ' . $path);
 		
-		$output = array();
-		exec("php -f " . $path, $output);
-		
+		$output = $this->runPhpScript($path);
+
 		$result = implode("\r\n", $output);
 		if ($isDebug) $this->debug($result);
 		return $result;
@@ -31,5 +30,28 @@ class ScriptRunner {
 		echo "\r\n//----result---\r\n";
 		echo $result;
 		echo "\r\n-----------//\r\n";
+	}
+
+	private function runPhpScript($path) {
+		//exec("php -f " . $path, $output);
+		$parts = pathinfo($path);
+
+		$desc = array(
+			1 => array("pipe", "w"),
+			2 => array("pipe", "w"),
+		);
+
+		$process = proc_open("php -f " . $parts['basename'], $desc, $pipes, $parts['dirname']);
+		if (is_resource($process)) {
+			$stdout = stream_get_contents($pipes[1]);
+			fclose($pipes[1]);
+
+			$stderr = stream_get_contents($pipes[2]);
+			fclose($pipes[2]);
+			$result = proc_close($process);
+
+			return array($stdout, $stderr, $result);
+		}
+		return array();
 	}
 }

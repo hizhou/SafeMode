@@ -1,5 +1,5 @@
 <?php
-$file = "forinclude.php";
+$file = "./forinclude.php";
 include($file);
 include $file;
 require($file);

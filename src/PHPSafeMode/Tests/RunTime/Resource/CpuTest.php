@@ -14,7 +14,7 @@ class CpuTest extends BaseTestCase {
 		$mode->runTime()->cpu()->setTimeLimit($limit);
 		
 		$this->assertContains(
-			"Fatal error: Maximum execution time of $limit seconds", 
+			"Maximum execution time of $limit seconds", 
 			$this->runInSafeMode($mode, $codeSpecify)
 		);
 	}

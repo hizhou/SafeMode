@@ -16,7 +16,7 @@ class ApiTest extends BaseTestCase {
 				$mode = $this->getNewSafeMode();
 				$mode->runTime()->api()->disableFunctions($disabled);
 				$this->assertContains(
-					"Fatal error: Uncaught exception 'Exception' with message 'function disabled: $disabled'",
+					"Uncaught exception 'Exception' with message 'function disabled: $disabled'",
 					$this->runInSafeMode($mode, $codeSpecify)
 				);
 			}
@@ -33,7 +33,7 @@ class ApiTest extends BaseTestCase {
 			$mode = $this->getNewSafeMode();
 			$mode->runTime()->api()->disableFunctions($disabled);
 			$this->assertContains(
-				"Fatal error: Uncaught exception 'Exception' with message 'function disabled: ",
+				"Uncaught exception 'Exception' with message 'function disabled: ",
 				$this->runInSafeMode($mode, $codeSpecify)
 			);
 		}

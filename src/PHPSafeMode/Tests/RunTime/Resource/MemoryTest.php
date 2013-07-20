@@ -14,7 +14,7 @@ class MemoryTest extends BaseTestCase {
 		$mode->runTime()->memory()->setMemoryLimit($limit);
 		
 		$this->assertContains(
-			"Fatal error: Allowed memory size of", 
+			"Allowed memory size of", 
 			$this->runInSafeMode($mode, $codeSpecify)
 		);
 	}
