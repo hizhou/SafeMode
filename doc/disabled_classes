@@ -1,0 +1,16 @@
+APCIterator
+Runkit_Sandbox
+Runkit_Sandbox_Parent
+
+Phar
+PharData
+PharFileInfo
+PharException
+
+RarArchive
+RarEntry
+RarException
+
+ZipArchive
+
+
