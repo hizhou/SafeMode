@@ -1,0 +1,7 @@
+HttpDeflateStream
+HttpInflateStream
+HttpMessage
+HttpQueryString
+HttpRequest
+HttpRequestPool
+HttpResponse

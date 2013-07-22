@@ -1,0 +1,15 @@
+connection_aborted
+connection_status
+connection_timeout
+constant
+define
+defined
+die
+exit
+get_browser
+highlight_string
+sleep
+time_nanosleep
+time_sleep_until
+uniqid
+usleep

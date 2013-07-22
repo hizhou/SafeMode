@@ -1,0 +1,6 @@
+cyrus_authenticate
+cyrus_bind
+cyrus_close
+cyrus_connect
+cyrus_query
+cyrus_unbind

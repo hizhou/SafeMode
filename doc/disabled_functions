@@ -383,6 +383,9 @@ tempnam
 tmpfile
 umask
 
+mb_send_mail
+mb_ereg_replace_callback
+
 
 
 

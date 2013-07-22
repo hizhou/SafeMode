@@ -1,0 +1,5 @@
+AMQPConnection
+AMQPChannel
+AMQPExchange
+AMQPQueue
+AMQPEnvelope

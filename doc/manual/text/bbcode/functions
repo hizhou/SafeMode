@@ -1,0 +1,7 @@
+bbcode_add_element
+bbcode_add_smiley
+bbcode_create
+bbcode_destroy
+bbcode_parse
+bbcode_set_arg_parser
+bbcode_set_flags

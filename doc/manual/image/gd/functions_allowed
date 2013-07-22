@@ -1,0 +1,81 @@
+gd_info
+getimagesize //
+getimagesizefromstring
+image_type_to_extension
+image_type_to_mime_type
+imagealphablending
+imageantialias
+imagearc
+imagechar
+imagecharup
+imagecolorallocate
+imagecolorallocatealpha
+imagecolorat
+imagecolorclosest
+imagecolorclosestalpha
+imagecolorclosesthwb
+imagecolordeallocate
+imagecolorexact
+imagecolorexactalpha
+imagecolormatch
+imagecolorresolve
+imagecolorresolvealpha
+imagecolorset
+imagecolorsforindex
+imagecolorstotal
+imagecolortransparent
+imageconvolution
+imagecopy
+imagecopymerge
+imagecopymergegray
+imagecopyresampled
+imagecopyresized
+imagecreate
+imagecreatefromgif //
+imagecreatefromjpeg //
+imagecreatefrompng //
+imagecreatefromstring
+imagecreatefromwbmp //
+imagecreatetruecolor
+imagecrop
+imagecropauto
+imagedashedline
+imagedestroy
+imageellipse
+imagefill
+imagefilledarc
+imagefilledellipse
+imagefilledpolygon
+imagefilledrectangle
+imagefilltoborder
+imagefilter
+imageflip
+imagefontheight
+imagefontwidth
+imagegammacorrect
+imagegif //
+imageinterlace
+imageistruecolor
+imagejpeg //
+imagelayereffect
+imageline
+imagepalettecopy
+imagepalettetotruecolor
+imagepng //
+imagepolygon
+imagerectangle
+imagerotate
+imagesavealpha
+imagescale
+imagesetbrush
+imagesetpixel
+imagesetstyle
+imagesetthickness
+imagesettile
+imagestring
+imagestringup
+imagesx
+imagesy
+imagetruecolortopalette
+imagetypes
+imagewbmp //

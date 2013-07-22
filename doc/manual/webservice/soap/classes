@@ -1,0 +1,6 @@
+SoapClient
+SoapServer
+SoapFault
+SoapHeader
+SoapParam
+SoapVar

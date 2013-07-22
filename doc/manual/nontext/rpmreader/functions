@@ -1,0 +1,5 @@
+rpm_close
+rpm_get_tag
+rpm_is_valid
+rpm_open
+rpm_version

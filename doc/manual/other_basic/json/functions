@@ -1,0 +1,4 @@
+json_decode
+json_encode
+json_last_error_msg
+json_last_error

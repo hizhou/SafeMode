@@ -1,0 +1,6 @@
+shmop_close
+shmop_delete
+shmop_open
+shmop_read
+shmop_size
+shmop_write

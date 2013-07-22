@@ -1,0 +1,11 @@
+ob_tidyhandler
+tidy_access_count
+tidy_config_count
+tidy_error_count
+tidy_get_output
+tidy_load_config
+tidy_reset_config
+tidy_save_config
+tidy_set_encoding
+tidy_setopt
+tidy_warning_count
