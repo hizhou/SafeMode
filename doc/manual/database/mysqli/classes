@@ -1,0 +1,6 @@
+MySQLi
+MySQLi_STMT
+mysqli_result
+MySQLi_Driver
+MySQLi_Warning
+mysqli_sql_exception

@@ -1,0 +1,14 @@
+extension_loaded
+get_extension_funcs
+get_loaded_extensions
+get_magic_quotes_gpc
+get_magic_quotes_runtime
+getenv //
+getlastmod
+magic_quotes_runtime
+phpcredits
+phpinfo //
+phpversion
+set_magic_quotes_runtime
+version_compare
+zend_version

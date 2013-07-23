@@ -1,0 +1,9 @@
+chdir
+chroot
+closedir
+dir
+getcwd
+opendir
+readdir
+rewinddir
+scandir

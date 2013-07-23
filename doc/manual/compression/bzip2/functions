@@ -1,0 +1,10 @@
+bzclose
+bzcompress
+bzdecompress
+bzerrno
+bzerror
+bzerrstr
+bzflush
+bzopen
+bzread
+bzwrite

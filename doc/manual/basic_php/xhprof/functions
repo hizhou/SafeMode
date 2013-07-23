@@ -1,0 +1,4 @@
+xhprof_disable
+xhprof_enable
+xhprof_sample_disable
+xhprof_sample_enable

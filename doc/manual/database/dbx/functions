@@ -1,0 +1,8 @@
+dbx_close
+dbx_compare
+dbx_connect
+dbx_error
+dbx_escape_string
+dbx_fetch_row
+dbx_query
+dbx_sort

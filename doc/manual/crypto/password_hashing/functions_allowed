@@ -1,0 +1,4 @@
+password_get_info
+password_hash
+password_needs_rehash
+password_verify

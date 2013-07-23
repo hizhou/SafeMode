@@ -1,0 +1,2 @@
+opcache_invalidate
+opcache_reset

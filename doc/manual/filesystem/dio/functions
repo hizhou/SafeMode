@@ -1,0 +1,9 @@
+dio_close
+dio_fcntl
+dio_open
+dio_read
+dio_seek
+dio_stat
+dio_tcsetattr
+dio_truncate
+dio_write
