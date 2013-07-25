@@ -37,7 +37,7 @@ ftp
 network
 session
 pcre
-posix_regex
+ereg
 array
 class_object
 ctype
