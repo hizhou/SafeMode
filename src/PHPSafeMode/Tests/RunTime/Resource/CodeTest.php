@@ -10,7 +10,6 @@ class CodeTest extends BaseTestCase {
 		
 		$codeSpecify = 'code/file_for_include';
 		$this->runInOriginalMode($codeSpecify, false, 'forinclude.php');
-		//$this->runInSafeMode($mode, $codeSpecify, false, 'forinclude.php');
 		
 		$codeSpecify = 'code/include_outside_absolute';
 		$this->assertNotContains('be relative', $this->runInOriginalMode($codeSpecify));

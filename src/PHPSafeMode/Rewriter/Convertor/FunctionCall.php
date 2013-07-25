@@ -2,6 +2,12 @@
 namespace PHPSafeMode\Rewriter\Convertor;
 
 class FunctionCall extends \PHPParser_NodeVisitorAbstract {
+	private $functionName;
+	
+	public function __construct($functionName) {
+		$this->functionName = $functionName;
+	}
+	
 	public function beforeTraverse(array $nodes) {
 		//var_dump($nodes);return ;
 	}
@@ -25,7 +31,7 @@ class FunctionCall extends \PHPParser_NodeVisitorAbstract {
 			}
 			
 			$newNode = new \PHPParser_Node_Expr_FuncCall(
-				new \PHPParser_Node_Name_FullyQualified(array('safemode_function_call')),
+				new \PHPParser_Node_Name_FullyQualified(array($this->functionName)),
 				$args
 			);
 			return $newNode;

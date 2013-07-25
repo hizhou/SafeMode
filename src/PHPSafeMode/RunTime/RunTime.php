@@ -1,51 +1,67 @@
 <?php 
 namespace PHPSafeMode\RunTime;
 
-use PHPSafeMode\RunTime\Resource\Cpu;
-use PHPSafeMode\RunTime\Resource\Api;
-use PHPSafeMode\RunTime\Resource\Code;
-use PHPSafeMode\RunTime\Resource\Storage;
-use PHPSafeMode\RunTime\Resource\Memory;
+use PHPSafeMode\Generator\GeneratorContainer;
 
 class RunTime {
-	private $cpu;
-	private $api;
-	private $code;
-	private $storage;
-	private $memory;
+	private $resource;
+	private $generatorContainer;
 	
+	public function __construct($safePath) {
+		$this->generatorContainer = new GeneratorContainer();
+		
+		$this->storage()->setSafePath($safePath);
+		$this->code()->setSafePath($safePath);
+	}
+	
+	/**
+	 * @return Resource\Cpu
+	 */
 	public function cpu() {
-		if (!$this->cpu) {
-			$this->cpu = new Cpu();
-		}
-		return $this->cpu;
+		return $this->getResource('cpu');
 	}
-	
+
+	/**
+	 * @return Resource\Api
+	 */
 	public function api() {
-		if (!$this->api) {
-			$this->api = new Api();
-		}
-		return $this->api;
+		return $this->getResource('api');
 	}
-	
+
+	/**
+	 * @return Resource\Code
+	 */
 	public function code() {
-		if (!$this->code) {
-			$this->code = new Code();
-		}
-		return $this->code;
+		return $this->getResource('code');
 	}
-	
+
+	/**
+	 * @return Resource\Storage
+	 */
 	public function storage() {
-		if (!$this->storage) {
-			$this->storage = new Storage();
-		}
-		return $this->storage;
+		return $this->getResource('storage');
+	}
+
+	/**
+	 * @return Resource\Memory
+	 */
+	public function memory() {
+		return $this->getResource('memory');
 	}
 	
-	public function memory() {
-		if (!$this->memory) {
-			$this->memory = new Memory();
+	
+	public function generatorContainer() {
+		return $this->generatorContainer;
+	}
+	
+	
+	private function getResource($name) {
+		$name = strtolower($name);
+		
+		if (!isset($this->resource[$name])) {
+			$class = __NAMESPACE__ . '\\Resource\\' . ucfirst($name);
+			$this->resource[$name] = new $class($this);
 		}
-		return $this->memory;
+		return $this->resource[$name];
 	}
 }

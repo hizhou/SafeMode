@@ -3,7 +3,7 @@ namespace PHPSafeMode\RunTime\Resource;
 
 use \PHPSafeMode\RunTime\RunTimeException;
 
-class Storage extends ResourceBase {
+class Storage extends BaseResource {
 	private $safePath;
 
 	private $readTypes = array();

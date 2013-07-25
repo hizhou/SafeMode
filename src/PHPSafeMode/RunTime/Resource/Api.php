@@ -2,32 +2,24 @@
 namespace PHPSafeMode\RunTime\Resource;
 
 use PHPSafeMode\RunTime\RunTimeException;
+use PHPSafeMode\Generator\Type\FunctionType;
+use PHPSafeMode\Generator\Type\FunctionGenerator;
 
-class Api extends ResourceBase {
+class Api extends BaseResource {
 	private $disableFunctions = array();
 	private $replaceFunctions = array();
 	
-	public function getBootstrapCodes() {
-		if ($this->hasDisableFunctions() || $this->hasReplaceFunctions()) {
-			$this->appendBootstrapCode($this->generateSafeFunctionCall(), 'safemode_function_call');
-		}
-		
-		return parent::getBootstrapCodes();
-	}
-	
-	
-	
 	public function disableFunctions($functions) {
-		if (!is_array($functions)) $functions = array($functions);
+		if (!is_array($functions)) {
+			if ($functions == '') throw new RunTimeException('disable function should not be empty');
+			$functions = array($functions);
+		}
 		
 		foreach ($functions as $v) {
 			$v = strtolower($v);
 			$this->disableFunctions[$v] = $v;
 		}
-	}
-	
-	public function hasDisableFunctions() {
-		return count($this->disableFunctions);
+		$this->generateCode();
 	}
 	
 	/**
@@ -42,36 +34,22 @@ class Api extends ResourceBase {
 			if (!$newName) throw new RunTimeException('function replace failed: can not parse function name from code');
 			
 			$this->replaceFunctions[$originName] = $newName;
-			$this->appendBootstrapCode($newImplCode, $newName);
+			$this->runTime()->generatorContainer()->add(
+				new FunctionGenerator($newName, $newImplCode)
+			);
 		}
+		$this->generateCode();
 	}
 	
-	public function hasReplaceFunctions() {
-		return count($this->replaceFunctions);
-	}
 	
 	
-	
-	private function generateSafeFunctionCall() {
-		$disables = var_export($this->disableFunctions, true);
-		$replaces = var_export($this->replaceFunctions, true);
-		
-		return 'function safemode_function_call() {
-			$params = func_get_args();
-			$functionName = strtolower($params[0]);
-			unset($params[0]);
-			
-			$disables = ' . $disables . ';
-			$replaces = ' . $replaces .';
-			
-			if (in_array($functionName, $disables)) {
-				throw new \\Exception("function disabled: " . $functionName);
-			} elseif (isset($replaces[$functionName])) {
-				$functionName = "\\\\" . $replaces[$functionName];
-			}
-			return \\call_user_func_array($functionName, $params);
-		}
-		';
+	private function generateCode() {
+		$this->runTime()->generatorContainer()->add(
+			new FunctionGenerator('fn_check_function_call', $this->generateCodeFromFile('api/fn_check_function_call'), 
+				array('fn_get_disabled_functions', 'fn_get_replaced_functions'), FunctionType::FUNCTION_CALL),
+			new FunctionGenerator('fn_get_disabled_functions', $this->generateFunctionFromVar('fn_get_disabled_functions', $this->disableFunctions)),
+			new FunctionGenerator('fn_get_replaced_functions', $this->generateFunctionFromVar('fn_get_replaced_functions', $this->replaceFunctions), $this->replaceFunctions)
+		);
 	}
 	
 	private function parseFunctionName($code) {

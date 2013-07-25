@@ -1,5 +1,5 @@
 <?php
-namespace PHPSafeMode\Rewriter;
+namespace PHPSafeMode\Generator;
 
 class Bootstrap {
 	private $codes = array();
