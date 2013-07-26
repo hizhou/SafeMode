@@ -5,7 +5,7 @@ class ManualParser {
 	private $manual;
 	
 	public function __construct() {
-		$base = realpath(__DIR__ . '/../../../doc/manual/');
+		$base = realpath(__DIR__ . '/../../doc/manual/');
 		
 		$disabledFunctions = $enabledFunctions = array();
 		$disabledClasses = $enabledClasses = array();
