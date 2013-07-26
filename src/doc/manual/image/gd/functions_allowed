@@ -1,5 +1,5 @@
 gd_info
-getimagesize //
+getimagesize {"readFile": 0}
 getimagesizefromstring
 image_type_to_extension
 image_type_to_mime_type
@@ -31,11 +31,11 @@ imagecopymergegray
 imagecopyresampled
 imagecopyresized
 imagecreate
-imagecreatefromgif //
-imagecreatefromjpeg //
-imagecreatefrompng //
+imagecreatefromgif {"readFile": 0}
+imagecreatefromjpeg {"readFile": 0}
+imagecreatefrompng {"readFile": 0}
 imagecreatefromstring
-imagecreatefromwbmp //
+imagecreatefromwbmp {"readFile": 0}
 imagecreatetruecolor
 imagecrop
 imagecropauto
@@ -53,15 +53,15 @@ imageflip
 imagefontheight
 imagefontwidth
 imagegammacorrect
-imagegif //
+imagegif {"writeFile": 1}
 imageinterlace
 imageistruecolor
-imagejpeg //
+imagejpeg {"writeFile": 1}
 imagelayereffect
 imageline
 imagepalettecopy
 imagepalettetotruecolor
-imagepng //
+imagepng {"writeFile": 1}
 imagepolygon
 imagerectangle
 imagerotate
@@ -78,4 +78,4 @@ imagesx
 imagesy
 imagetruecolortopalette
 imagetypes
-imagewbmp //
+imagewbmp {"writeFile": 1}

@@ -2,63 +2,92 @@
 namespace PHPSafeMode\Tool;
 
 class ManualParser {
-	private $manual;
+	private $manualPath;
 	
 	public function __construct() {
-		$base = realpath(__DIR__ . '/../../doc/manual/');
+		$this->manualPath = realpath(__DIR__ . '/../../doc/manual/');
+	}
+	
+	public function parse() {
+		$base = $this->manualPath;
 		
 		$disabledFunctions = $enabledFunctions = array();
 		$disabledClasses = $enabledClasses = array();
-		$classAppends = $functionAppends = array();
-
+		$classesComments = array();
+		$functionsComments = array();
+		
 		foreach ($this->getNeedCheckedModules($base) as $module => $subPath) {
 			$modulePath = $base . '/' . $subPath;
-
+		
 			$file = $modulePath . '/functions';
 			if (file_exists($file)) {
-				list($lines, $appends) = $this->parseFile($file);
+				list($lines, $comments) = $this->parseFile($file);
 				foreach ($lines as $v) {
 					$disabledFunctions[$v] = $v;
 				}
-				$functionAppends += $appends;
+				$functionsComments += $comments;
 			}
-
+		
 			$file = $modulePath . '/functions_allowed';
 			if (file_exists($file)) {
-				list($lines, $appends) = $this->parseFile($file);
+				list($lines, $comments) = $this->parseFile($file);
 				foreach ($lines as $v) {
 					$enabledFunctions[$v] = $v;
 					unset($disabledFunctions[$v]);
 				}
-				$functionAppends += $appends;
+				$functionsComments += $comments;
 			}
-
+		
 			$file = $modulePath . '/classes';
 			if (file_exists($file)) {
-				list($lines, $appends) = $this->parseFile($file);
+				list($lines, $comments) = $this->parseFile($file);
 				foreach ($lines as $v) {
 					$disabledClasses[$v] = $v;
 				}
-				$classAppends += $appends;
+				$classesComments += $comments;
 			}
-
+		
 			$file = $modulePath . '/classes_allowed';
 			if (file_exists($file)) {
-				list($lines, $appends) = $this->parseFile($file);
+				list($lines, $comments) = $this->parseFile($file);
 				foreach ($lines as $v) {
 					$enabledClasses[$v] = $v;
 					unset($disabledClasses[$v]);
 				}
-				$classAppends += $appends;
+				$classesComments += $comments;
 			}
 		}
-		var_dump(count($disabledFunctions) , count($enabledFunctions),
-		count($disabledClasses) , count($enabledClasses) ,
-		count($classAppends) , count($functionAppends));
+		return array(
+			'disabledFunctions' => $disabledFunctions,
+			'enabledFunctions' => $enabledFunctions,
+			'functionsComments' => $functionsComments,
+			'disabledClasses' => $disabledClasses,
+			'enabledClasses' => $enabledClasses,
+			'classesComments' => $classesComments,
+		);
+	}
+	
+	public function parseUnsafeFileSystemFunctions($functionsComments) {
+		$fsFunctions = array();
+		$types = array('readFile', 'writeFile', 'rmFile', 'readDir', 'createDir', 'rmDir');
+		foreach ($functionsComments as $function => $comment) {
+			$comment = json_decode($comment, true);
+			
+			if (!$comment) { continue; }
+			
+			$type = '';
+			foreach ($types as $k) {
+				if (isset($comment[$k])) {
+					$type = $k;
+					break;
+				}
+			}
+			$fsFunctions[$k][$function] = $comment; //unset($functionsComments[$function]);
+		}
+		return $fsFunctions;
 	}
 
-	private function getNeedCheckedModules($base) {
-		
+	private function getNeedCheckedModules($base, $isAll = true) {
 		$modules = array();
 		foreach ($this->getFolders($base) as $folder) {
 			foreach ($this->getFolders($base . '/' . $folder) as $module) {
@@ -86,7 +115,7 @@ class ManualParser {
 		if ($unknownModules)
 			throw new \Exception('unknow modules: ' . implode(",", $unknownModules));
 
-		return $needCheckedModules;
+		return $isAll ? $modules : $needCheckedModules;
 	}
 	
 	private function isIgnoredModule($module) {
@@ -110,7 +139,7 @@ class ManualParser {
 	
 	private function parseFile($path) {
 		$lines = array();
-		$appends = array();
+		$comments = array();
 		foreach (explode("\n", file_get_contents($path)) as $line) {
 			$line = trim($line);
 			if ($line == '') {continue;}
@@ -119,7 +148,7 @@ class ManualParser {
 			if ($sepPos !== false) {
 				$head = substr($line, 0, $sepPos);
 				$rest = trim(substr($line, $sepPos));
-				$appends[$head] = $rest;
+				$comments[$head] = $rest;
 			} else {
 				$head = $line;
 			}
@@ -127,6 +156,6 @@ class ManualParser {
 			$lines[] = $head;
 		}
 		
-		return array($lines, $appends);
+		return array($lines, $comments);
 	}
 }

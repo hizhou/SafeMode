@@ -1,7 +1,7 @@
 closedir
 dir
 getcwd
-opendir //
+opendir {"readDir": 0}
 readdir
 rewinddir
 scandir

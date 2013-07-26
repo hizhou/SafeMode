@@ -1,6 +1,6 @@
-basename //
-copy //
-dirname //
+basename
+copy {"readFile": 0, "writeFile": 1, "writeFromFile": 0}
+dirname
 fclose
 feof
 fflush
@@ -8,40 +8,39 @@ fgetc
 fgetcsv
 fgets
 fgetss
-file_exists //
-file_get_contents //
-file_put_contents //
-file //
-fileatime //
-filectime //
-filemtime //
-filesize //
-filetype //
+file_exists {"readFile": 0}
+file_get_contents {"readFile": 0, "includePath": 1}
+file_put_contents {"writeFile": 0, "writeData": 1}
+file {"readFile": 0}
+fileatime {"readFile": 0}
+filectime {"readFile": 0}
+filemtime {"readFile": 0}
+filesize {"readFile": 0}
+filetype {"readFile": 0}
 flock
-fopen //
+fopen {"writeFile": 0, "writeData": -1, "includePath": 2}
 fpassthru
-fputcsv
-fputs //
+fputcsv {"writeFile": -1, "writeData": 1}
+fputs {"writeFile": -1, "writeData": 1}
 fread
 fscanf
 fseek
 ftell
 ftruncate
-fwrite //
-is_dir //
-is_file //
-is_readable //
-is_uploaded_file //
-is_writable //
-is_writeable //
-mkdir //
-move_uploaded_file //
+fwrite {"writeFile": -1, "writeData": 1}
+is_dir {"readDir": 0}
+is_file {"readFile": 0}
+is_readable {"readFile": 0}
+is_uploaded_file
+is_writable {"readFile": 0}
+is_writeable {"readFile": 0}
+mkdir {"createDir": 0, "createDirRecursive": 2}
+move_uploaded_file {"writeFile": 1, "writeFromFile": 0}
 parse_ini_string
-pathinfo //
-readfile //
-realpath //
-rename //
+pathinfo {"readFile": 0}
+readfile {"readFile": 0, "includePath": 1}
+realpath {"readFile": 0}
 rewind
-rmdir //
-touch //
-unlink //
+rmdir {"rmDir": 0}
+touch {"writeFile": 0, "writeData": -1}
+unlink {"rmFile": 0}

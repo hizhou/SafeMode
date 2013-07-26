@@ -25,6 +25,7 @@ class FunctionCall extends \PHPParser_NodeVisitorAbstract {
 			
 			$args = array();
 			$args[] = $name;
+			$args[] = new \PHPParser_Node_Scalar_FileConst;
 			
 			foreach ($node->args as $arg) {
 				$args[] = $arg;
