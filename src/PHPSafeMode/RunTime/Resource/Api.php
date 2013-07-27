@@ -8,6 +8,8 @@ use PHPSafeMode\Generator\Type\FunctionGenerator;
 class Api extends BaseResource {
 	private $disableFunctions = array();
 	private $replaceFunctions = array();
+
+	private $functionCallFilters = array();
 	
 	public function disableFunctions($functions) {
 		if (!is_array($functions)) {
@@ -40,13 +42,20 @@ class Api extends BaseResource {
 		}
 		$this->generateCode();
 	}
+
+	public function addFunctionCallFilter($filter) {
+		$this->functionCallFilters[$filter] = $filter;
+		
+		$this->generateCode();
+	}
 	
 	
 	
 	private function generateCode() {
 		$this->runTime()->generatorContainer()->add(
 			new FunctionGenerator('fn_check_function_call', $this->generateCodeFromFile('api/fn_check_function_call'), 
-				array('fn_get_disabled_functions', 'fn_get_replaced_functions'), FunctionType::FUNCTION_CALL),
+				array('fn_get_function_call_filters', 'fn_get_disabled_functions', 'fn_get_replaced_functions'), FunctionType::FUNCTION_CALL),
+			new FunctionGenerator('fn_get_function_call_filters', $this->generateFunctionFromVar('fn_get_function_call_filters', $this->functionCallFilters), $this->functionCallFilters),
 			new FunctionGenerator('fn_get_disabled_functions', $this->generateFunctionFromVar('fn_get_disabled_functions', $this->disableFunctions)),
 			new FunctionGenerator('fn_get_replaced_functions', $this->generateFunctionFromVar('fn_get_replaced_functions', $this->replaceFunctions), $this->replaceFunctions)
 		);

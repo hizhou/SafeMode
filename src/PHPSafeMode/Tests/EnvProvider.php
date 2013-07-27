@@ -53,7 +53,14 @@ class EnvProvider {
 		if ($handle = opendir($dir)) {
 			while (false !== ($file = readdir($handle))) {
 				if (in_array($file, array('.', '..'))) {continue;}
-				unlink($dir . '/' . $file);
+
+				$filePath = $dir . '/' . $file;
+				if (is_dir($filePath)) {
+					$this->clearDir($filePath);
+					rmdir($filePath);
+				} else {
+					unlink($filePath);
+				}
 			}
 			closedir($handle);
 		}

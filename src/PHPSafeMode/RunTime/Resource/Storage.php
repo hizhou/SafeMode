@@ -2,6 +2,7 @@
 namespace PHPSafeMode\RunTime\Resource;
 
 use \PHPSafeMode\RunTime\RunTimeException;
+use PHPSafeMode\Generator\Type\FunctionGenerator;
 
 class Storage extends BaseResource {
 	private $safePath;
@@ -13,6 +14,8 @@ class Storage extends BaseResource {
 	public function setSafePath($safePath) { //check all file:read/write dir:read/write
 		$this->safePath = realpath($safePath);
 		if (!is_dir($this->safePath)) throw new RunTimeException('safe path not exist');
+
+		$this->generateCode();
 	}
 
 	public function setAllowedTypes($types) { //check all file:read/write 
@@ -41,7 +44,11 @@ class Storage extends BaseResource {
 			new FunctionGenerator('fn_get_storage_safe_path', $this->generateFunctionFromVar('fn_get_storage_safe_path', $this->safePath)),
 			new FunctionGenerator('fn_get_storage_allowed_types', $this->generateFunctionFromVar('fn_get_storage_allowed_types', $this->allowedTypes)),
 			new FunctionGenerator('fn_get_storage_write_max_size', $this->generateFunctionFromVar('fn_get_storage_write_max_size', $this->allowedTypes)),
-			new FunctionGenerator('fn_get_storage_write_max_files', $this->generateFunctionFromVar('fn_get_storage_write_max_files', $this->allowedTypes))
+			new FunctionGenerator('fn_get_storage_write_max_files', $this->generateFunctionFromVar('fn_get_storage_write_max_files', $this->allowedTypes)),
+
+			new FunctionGenerator('fn_check_storage_filter', $this->generateCodeFromFile('storage/fn_check_storage_filter'), 
+				array('fn_get_unsafe_storage_functions', 'fn_get_storage_safe_path', 'fn_get_storage_allowed_types', 'fn_get_storage_write_max_size', 'fn_get_storage_write_max_files'))
 		);
+		$this->runTime()->api()->addFunctionCallFilter('fn_check_storage_filter');
 	}
 }

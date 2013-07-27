@@ -4,3 +4,4 @@
 .project
 .settings/
 /src/PHPSafeMode/Tests/data/
+*.DS_Store

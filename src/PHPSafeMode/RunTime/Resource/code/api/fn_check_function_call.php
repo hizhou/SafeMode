@@ -4,6 +4,12 @@ function fn_check_function_call() {
 	$functionName = strtolower($params[0]);
 	$callingFile = $params[1];
 	unset($params[0], $params[1]);
+
+	$newParams = array();
+	foreach ($params as $v) {
+		$newParams[] = $v;
+	}
+	$params = $newParams;
 		
 	$disables = fn_get_disabled_functions();
 	$replaces = fn_get_replaced_functions();
@@ -12,7 +18,12 @@ function fn_check_function_call() {
 		throw new \Exception("function disabled: " . $functionName);
 	}
 	
-	//
+	foreach (fn_get_function_call_filters() as $filter) {
+//var_dump($functionName . '----before ', $params);
+		$filtered = $filter($functionName, $callingFile, $params);
+		if (is_array($filtered)) $params = $filtered;
+//var_dump('----after ', $params);
+	}
 	
 	if (isset($replaces[$functionName])) {
 		$functionName = "\\" . $replaces[$functionName];
