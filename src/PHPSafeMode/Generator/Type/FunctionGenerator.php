@@ -3,6 +3,9 @@ namespace PHPSafeMode\Generator\Type;
 
 use PHPSafeMode\Rewriter\Convertor\FunctionCall;
 use PHPSafeMode\Rewriter\Convertor\FileInclude;
+use PHPSafeMode\Rewriter\Convertor\ClassNew;
+use PHPSafeMode\Rewriter\Convertor\ClassExtendCheck;
+use PHPSafeMode\Rewriter\Convertor\ClassMethodCall;
 
 class FunctionGenerator extends BaseGenerator {
 	private $type = FunctionType::COMMON;
@@ -29,6 +32,12 @@ class FunctionGenerator extends BaseGenerator {
 			return new FunctionCall($specify);
 		} elseif ($this->type == FunctionType::FILE_INCLUDE) {
 			return new FileInclude($specify);
+		} elseif ($this->type == FunctionType::CLASS_NEW) {
+			return new ClassNew($specify);
+		} elseif ($this->type == FunctionType::CLASS_EXTEND_CHECK) {
+			return new ClassExtendCheck($specify);
+		} elseif ($this->type == FunctionType::CLASS_METHOD_CALL) {
+			return new ClassMethodCall($specify);
 		}
 		return ;
 	}

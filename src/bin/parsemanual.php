@@ -15,7 +15,9 @@ count($parsed['enabledClasses']) ,
 count($parsed['classesComments']));
 
 $undis = $man->verifyDisabledFunctions($parsed['enabledFunctions'], $parsed['disabledFunctions']);
-var_dump('undisabled: ' . count($undis));
+//var_dump('undisabled: ' . count($undis));
+
+//var_dump($parsed['disabledClasses']);
 
 
 /*

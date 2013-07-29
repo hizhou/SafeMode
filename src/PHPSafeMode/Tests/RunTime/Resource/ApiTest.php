@@ -5,6 +5,7 @@ use PHPSafeMode\Tests\BaseTestCase;
 use PHPSafeMode\SafeMode;
 
 class ApiTest extends BaseTestCase {
+
 	public function testDisableFunction() {
 		$disabledList = array('strtoupper', 'substr');
 
@@ -57,5 +58,22 @@ class ApiTest extends BaseTestCase {
 				$this->runInSafeMode($mode, $codeSpecify)
 			);
 		}
+	}
+
+	public function testDisableClasses() {
+		$mode = $this->getNewSafeMode();
+		$mode->runTime()->api()->disableClasses('test');
+
+		$codeSpecify = 'api/use_class_with_new';
+		$this->assertContains('class disabled', $this->runInSafeMode($mode, $codeSpecify));
+
+		$codeSpecify = 'api/use_class_with_new_var';
+		$this->assertContains('class disabled', $this->runInSafeMode($mode, $codeSpecify));
+
+		$codeSpecify = 'api/use_class_with_extend';
+		$this->assertContains('class disabled', $this->runInSafeMode($mode, $codeSpecify));
+
+		$codeSpecify = 'api/use_class_with_static_call';
+		$this->assertContains('class disabled', $this->runInSafeMode($mode, $codeSpecify));
 	}
 }
