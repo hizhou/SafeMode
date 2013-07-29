@@ -8,7 +8,7 @@ class ManualParser {
 		$this->manualPath = realpath(__DIR__ . '/../../doc/manual/');
 	}
 	
-	public function parse() {
+	public function parse($disableOtherDefined = true) {
 		$base = $this->manualPath;
 		
 		$disabledFunctions = $enabledFunctions = array();
@@ -21,7 +21,7 @@ class ManualParser {
 		
 			$file = $modulePath . '/functions';
 			if (file_exists($file)) {
-				list($lines, $comments) = $this->parseFile($file);
+				list($lines, $comments) = $this->parseFile($file, true);
 				foreach ($lines as $v) {
 					$disabledFunctions[$v] = $v;
 				}
@@ -30,7 +30,7 @@ class ManualParser {
 		
 			$file = $modulePath . '/functions_allowed';
 			if (file_exists($file)) {
-				list($lines, $comments) = $this->parseFile($file);
+				list($lines, $comments) = $this->parseFile($file, true);
 				foreach ($lines as $v) {
 					$enabledFunctions[$v] = $v;
 					unset($disabledFunctions[$v]);
@@ -57,6 +57,11 @@ class ManualParser {
 				$classesComments += $comments;
 			}
 		}
+		
+		if ($disableOtherDefined) {
+			$disabledFunctions += $this->verifyDisabledFunctions($enabledFunctions, $disabledFunctions);
+		}
+		
 		return array(
 			'disabledFunctions' => $disabledFunctions,
 			'enabledFunctions' => $enabledFunctions,
@@ -85,6 +90,18 @@ class ManualParser {
 			$fsFunctions[$k][$function] = $comment; //unset($functionsComments[$function]);
 		}
 		return $fsFunctions;
+	}
+	
+	public function verifyDisabledFunctions($enabledFunctions, $disabledFunctions) {
+		$functions = get_defined_functions();
+		
+		$undisabled = array();
+		foreach ($functions['internal'] as $v) {
+			$v = strtolower($v);
+			if (isset($enabledFunctions[$v]) || isset($disabledFunctions[$v])) {continue;}
+			$undisabled[$v] = $v; 
+		}
+		return $undisabled;
 	}
 
 	private function getNeedCheckedModules($base, $isAll = true) {
@@ -137,7 +154,7 @@ class ManualParser {
 		return $folders;
 	}
 	
-	private function parseFile($path) {
+	private function parseFile($path, $lowercase = false) {
 		$lines = array();
 		$comments = array();
 		foreach (explode("\n", file_get_contents($path)) as $line) {
@@ -148,9 +165,11 @@ class ManualParser {
 			if ($sepPos !== false) {
 				$head = substr($line, 0, $sepPos);
 				$rest = trim(substr($line, $sepPos));
+				
+				if ($lowercase) $head = strtolower($head);
 				$comments[$head] = $rest;
 			} else {
-				$head = $line;
+				$head = $lowercase ? strtolower($line) : $line;
 			}
 			
 			$lines[] = $head;

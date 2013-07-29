@@ -43,5 +43,6 @@ stream_socket_server
 stream_socket_shutdown
 stream_supports_lock
 stream_register_wrapper
+stream_wrapper_register
 stream_wrapper_restore
 stream_wrapper_unregister

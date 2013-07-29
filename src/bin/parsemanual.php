@@ -14,10 +14,14 @@ count($parsed['disabledClasses']) ,
 count($parsed['enabledClasses']) ,
 count($parsed['classesComments']));
 
+$undis = $man->verifyDisabledFunctions($parsed['enabledFunctions'], $parsed['disabledFunctions']);
+var_dump('undisabled: ' . count($undis));
 
+
+/*
 $fs = $man->parseUnsafeFileSystemFunctions($parsed['functionsComments']);
 file_put_contents(__DIR__ . '/fs.php', '<?php return ' . var_export($fs, true) . ';');
-
+*/
 
 
 /*
