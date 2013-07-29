@@ -8,6 +8,7 @@ class AllRunTimeTests extends \PHPUnit_Framework_TestSuite {
 		$suite->addTestSuite(__NAMESPACE__ . '\Resource\MemoryTest');
 		$suite->addTestSuite(__NAMESPACE__ . '\Resource\ApiTest');
 		$suite->addTestSuite(__NAMESPACE__ . '\Resource\CodeTest');
+		$suite->addTestSuite(__NAMESPACE__ . '\Resource\StorageTest');
 		return $suite;
 	}
 }

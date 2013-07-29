@@ -22,7 +22,7 @@ function fn_check_function_call() {
 //var_dump($functionName . '----before ', $params);
 		$filtered = $filter($functionName, $callingFile, $params);
 		if (is_array($filtered)) $params = $filtered;
-//var_dump('----after ', $params);
+//var_dump('--after-- ', $params, '----end');
 	}
 	
 	if (isset($replaces[$functionName])) {

@@ -33,9 +33,9 @@ function fn_get_unsafe_storage_functions() {
 		'writeFile' => array(
 			'file_put_contents' => array('writeFile' => 0, 'writeData' => 1,),
 			'fopen' => array('writeFile' => 0, 'writeData' => -1, 'includePath' => 2,),
-			'fputcsv' => array('writeFile' => -1, 'writeData' => 1,),
-			'fputs' => array('writeFile' => -1, 'writeData' => 1,),
-			'fwrite' => array('writeFile' => -1, 'writeData' => 1,),
+			'fputcsv' => array('writeFile' => -1, 'filePointer' => 0, 'writeData' => 1,),
+			'fputs' => array('writeFile' => -1, 'filePointer' => 0, 'writeData' => 1,),
+			'fwrite' => array('writeFile' => -1, 'filePointer' => 0, 'writeData' => 1,),
 			'move_uploaded_file' => array('writeFile' => 1, 'writeFromFile' => 0,),
 			'touch' => array('writeFile' => 0, 'writeData' => -1,),
 			'imagegif' => array('writeFile' => 1,),
