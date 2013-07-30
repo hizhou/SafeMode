@@ -16,7 +16,19 @@ class FunctionCall extends \PHPParser_NodeVisitorAbstract {
 	}
 	
 	public function leaveNode(\PHPParser_Node $node) {
-		if ($node instanceof \PHPParser_Node_Expr_FuncCall) {
+		$special = '';
+		if ($node instanceof \PHPParser_Node_Expr_Eval) $special = 'eval';
+		if ($node instanceof \PHPParser_Node_Stmt_HaltCompiler) $special = '__halt_compiler';
+
+		if ($special) {
+			$newNode = new \PHPParser_Node_Expr_FuncCall(
+				new \PHPParser_Node_Name_FullyQualified(array($this->functionName)),
+				array(
+					new \PHPParser_Node_Scalar_String($special),
+				)
+			);
+			return $newNode;
+		} elseif ($node instanceof \PHPParser_Node_Expr_FuncCall) {
 			if ($node->name instanceof \PHPParser_Node_Name) {
 				$name = new \PHPParser_Node_Scalar_String($node->name->toString());
 			} else {

@@ -20,14 +20,14 @@ filetype {"readFile": 0}
 flock
 fopen {"writeFile": 0, "writeData": -1, "includePath": 2}
 fpassthru
-fputcsv {"writeFile": -1, "filePointer" => 0, "writeData": 1}
-fputs {"writeFile": -1, "filePointer" => 0, "writeData": 1}
+fputcsv {"writeFile": -1, "filePointer": 0, "writeData": 1}
+fputs {"writeFile": -1, "filePointer": 0, "writeData": 1}
 fread
 fscanf
 fseek
 ftell
 ftruncate
-fwrite {"writeFile": -1, "filePointer" => 0, "writeData": 1}
+fwrite {"writeFile": -1, "filePointer": 0, "writeData": 1}
 is_dir {"readDir": 0}
 is_file {"readFile": 0}
 is_readable {"readFile": 0}

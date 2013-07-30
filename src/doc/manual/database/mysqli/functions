@@ -2,7 +2,6 @@ mysqli_bind_param
 mysqli_bind_result
 mysqli_client_encoding
 mysqli_connect
-mysqli::disable_reads_from_master
 mysqli_disable_rpl_parse
 mysqli_enable_reads_from_master
 mysqli_enable_rpl_parse

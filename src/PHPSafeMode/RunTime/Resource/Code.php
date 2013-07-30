@@ -11,10 +11,8 @@ class Code extends BaseResource {
 	
 	
 	public function setSafePath($safePath) {
-		$safePath = realpath($safePath);
-		
-		if (!is_dir($safePath)) throw new RunTimeException('safe path not exist');
-		$this->safePath = $safePath;
+		$this->safePath = realpath($safePath);
+		if (!is_dir($this->safePath)) throw new RunTimeException('safe path not exist');
 		
 		$this->generateCode();
 	}

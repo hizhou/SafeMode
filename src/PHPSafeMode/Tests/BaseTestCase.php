@@ -19,7 +19,8 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase {
 	
 
 	protected function runInSafeMode(SafeMode $mode, $codeSpecify, $isDebug = false, $saveTo = 'index.php', $bootstrapSaveTo = 'bootstrap.php') {
-		$file = $mode->generateSafeCode($this->codeProvider()->getCode($codeSpecify), $saveTo, $bootstrapSaveTo);
+		$code = strpos($codeSpecify, ' ') ? $codeSpecify : $this->codeProvider()->getCode($codeSpecify);
+		$file = $mode->generateSafeCode($code, $saveTo, $bootstrapSaveTo);
 		return $this->scriptRunner()->run($file, $isDebug);
 	}
 	

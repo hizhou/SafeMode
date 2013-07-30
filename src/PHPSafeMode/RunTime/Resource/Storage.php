@@ -6,6 +6,7 @@ use PHPSafeMode\Generator\Type\FunctionGenerator;
 
 class Storage extends BaseResource {
 	private $safePath;
+	private $unsafeStorageFunctions = null;
 
 	private $allowedTypes = array();
 	private $writeMaxSize = 0;
@@ -16,6 +17,19 @@ class Storage extends BaseResource {
 		if (!is_dir($this->safePath)) throw new RunTimeException('safe path not exist');
 
 		$this->generateCode();
+	}
+
+	/**
+	 * @param $functions array struct: array( type => array( functionName => configArray ) )
+	 * @param $force bool default: false. if false, when $functions is empty, use a default list
+	 */
+	public function setUnSafeStorageFunctions($functions, $force = false) {
+		if (!$functions) {
+			if (!$force) $this->unsafeStorageFunctions = null;
+			else $this->unsafeStorageFunctions = array();
+		} else {
+			$this->unsafeStorageFunctions = $functions;
+		}
 	}
 
 	public function setAllowedTypes($types) { //check all file:read/write 
@@ -46,7 +60,10 @@ class Storage extends BaseResource {
 	
 	private function generateCode() {
 		$this->runTime()->generatorContainer()->add(
-			new FunctionGenerator('fn_get_unsafe_storage_functions', $this->generateCodeFromFile('storage/fn_get_unsafe_storage_functions')),
+			new FunctionGenerator('fn_get_unsafe_storage_functions', 
+				is_array($this->unsafeStorageFunctions) 
+				? $this->generateFunctionFromVar('fn_get_unsafe_storage_functions', $this->unsafeStorageFunctions)
+				: $this->generateCodeFromFile('storage/fn_get_unsafe_storage_functions')),
 			new FunctionGenerator('fn_get_storage_safe_path', $this->generateFunctionFromVar('fn_get_storage_safe_path', $this->safePath)),
 			new FunctionGenerator('fn_get_storage_allowed_types', $this->generateFunctionFromVar('fn_get_storage_allowed_types', $this->allowedTypes)),
 			new FunctionGenerator('fn_get_storage_write_max_size', $this->generateFunctionFromVar('fn_get_storage_write_max_size', $this->writeMaxSize)),

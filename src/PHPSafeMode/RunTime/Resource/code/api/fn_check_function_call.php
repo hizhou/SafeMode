@@ -5,6 +5,9 @@ function fn_check_function_call() {
 	$callingFile = $params[1];
 	unset($params[0], $params[1]);
 
+	if (!function_exists($functionName))
+		die('function not exist: ' . $functionName);
+
 	$newParams = array();
 	foreach ($params as $v) {
 		$newParams[] = $v;

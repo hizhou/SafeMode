@@ -2,7 +2,6 @@
 namespace PHPSafeMode\Tests\RunTime\Resource;
 
 use PHPSafeMode\Tests\BaseTestCase;
-use PHPSafeMode\SafeMode;
 
 class ApiTest extends BaseTestCase {
 
