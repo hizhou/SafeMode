@@ -40,7 +40,7 @@ class ManualParser {
 		
 			$file = $modulePath . '/classes';
 			if (file_exists($file)) {
-				list($lines, $comments) = $this->parseFile($file);
+				list($lines, $comments) = $this->parseFile($file, true);
 				foreach ($lines as $v) {
 					$disabledClasses[$v] = $v;
 				}
@@ -49,7 +49,7 @@ class ManualParser {
 		
 			$file = $modulePath . '/classes_allowed';
 			if (file_exists($file)) {
-				list($lines, $comments) = $this->parseFile($file);
+				list($lines, $comments) = $this->parseFile($file, true);
 				foreach ($lines as $v) {
 					$enabledClasses[$v] = $v;
 					unset($disabledClasses[$v]);
@@ -60,6 +60,7 @@ class ManualParser {
 		
 		if ($disableOtherDefined) {
 			$disabledFunctions += $this->verifyDisabledFunctions($enabledFunctions, $disabledFunctions);
+			$disabledClasses += $this->verifyDisabledClasses($enabledClasses, $disabledClasses);
 		}
 		
 		return array(
@@ -102,6 +103,19 @@ class ManualParser {
 			$undisabled[$v] = $v; 
 		}
 		return $undisabled;
+	}
+	
+	public function verifyDisabledClasses($enabledClasses, $disabledClasses) {
+		$classes = get_declared_classes();
+		
+		$undisabled = array();
+		foreach ($classes as $v) {
+			$v = strtolower($v);
+			if (isset($enabledClasses[$v]) || isset($disabledClasses[$v])) {continue;}
+			$undisabled[$v] = $v; 
+		}
+		return $undisabled;
+		
 	}
 
 	private function getNeedCheckedModules($base, $isAll = true) {

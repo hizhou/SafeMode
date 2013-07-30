@@ -1,11 +1,6 @@
-SplFileInfo
-SplFileObject
-SplTempFileObject
-
 StdClass
 Exception
 ErrorException
-Closure
 
 SplDoublyLinkedList
 SplStack

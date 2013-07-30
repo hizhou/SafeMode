@@ -2,7 +2,6 @@ Event
 EventBase
 EventBuffer
 EventBufferEvent
-About buffer event callbacks
 EventConfig
 EventDnsBase
 EventHttp
