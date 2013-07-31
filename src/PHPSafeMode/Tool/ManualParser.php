@@ -112,7 +112,10 @@ class ManualParser {
 		foreach ($classes as $v) {
 			$v = strtolower($v);
 			if (isset($enabledClasses[$v]) || isset($disabledClasses[$v])) {continue;}
-			$undisabled[$v] = $v; 
+			
+			if (strpos($v, 'composerautoloaderinit') === 0) {break;}
+			
+			$undisabled[$v] = $v;
 		}
 		return $undisabled;
 		
