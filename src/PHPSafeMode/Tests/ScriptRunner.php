@@ -14,6 +14,11 @@ class ScriptRunner {
 		$output = $this->runPhpScript($path);
 
 		$result = implode("\r\n", $output);
+
+		/* $fp = fopen(__DIR__ . '/data/log/log.txt', 'a+');
+		fwrite($fp, $result);
+		fclose($fp); */
+
 		if ($isDebug) $this->debug($result);
 		return $result;
 	}

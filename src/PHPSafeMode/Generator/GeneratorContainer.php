@@ -23,6 +23,8 @@ class GeneratorContainer {
 		$rewriter = new Rewriter($code);
 		$bootstrap = new Bootstrap();
 
+		$bootstrap->addCodes('error_reporting(E_ALL);');
+
 		$dependencies = array_keys($this->container);
 		$rename = array('prefix' => 'sfmd_');
 		

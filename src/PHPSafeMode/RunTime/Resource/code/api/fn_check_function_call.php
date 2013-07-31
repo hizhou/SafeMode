@@ -18,14 +18,12 @@ function fn_check_function_call() {
 	$replaces = fn_get_replaced_functions();
 		
 	if (in_array($functionName, $disables)) {
-		throw new \Exception("function disabled: " . $functionName);
+		trigger_error('函数 ' . $functionName . ' 被禁用', E_USER_ERROR);
 	}
 	
 	foreach (fn_get_function_call_filters() as $filter) {
-//var_dump($functionName . '----before ', $params);
 		$filtered = $filter($functionName, $callingFile, $params);
 		if (is_array($filtered)) $params = $filtered;
-//var_dump('--after-- ', $params, '----end');
 	}
 	
 	if (isset($replaces[$functionName])) {

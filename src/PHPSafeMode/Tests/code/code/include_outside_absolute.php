@@ -1,9 +1,10 @@
 <?php
-include("/etc/password");
-include "/etc/password";
-require("/etc/password");
-require "/etc/password";
-include_once("/etc/password");
-include_once "/etc/password";
-require_once("/etc/password");
-require_once "/etc/password";
+$file = __DIR__ . "/../origin/forinclude.php";
+include($file);
+include $file;
+require($file);
+require $file;
+include_once($file);
+include_once $file;
+require_once($file);
+require_once $file;

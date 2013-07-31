@@ -137,9 +137,9 @@ class DefaultImplTest extends BaseTestCase {
 			$code = '<?php class OSDJFxcv extends ' . $name . ' {}';
 			if (class_exists($name)) {
 				if (!in_array($name, $finalClasses))
-					$this->assertContains('class disabled', $this->runInSafeMode($mode, $code, 0));
+					$this->assertContains('class disabled', $this->runInSafeMode($mode, $code));
 			} else {
-				$this->runInSafeMode($mode, $code, 0);
+				$this->runInSafeMode($mode, $code);
 			}
 		}
 	}

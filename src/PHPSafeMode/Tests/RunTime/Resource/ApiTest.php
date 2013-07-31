@@ -16,7 +16,7 @@ class ApiTest extends BaseTestCase {
 				$mode = $this->getNewSafeMode();
 				$mode->runTime()->api()->disableFunctions($disabled);
 				$this->assertContains(
-					"Uncaught exception 'Exception' with message 'function disabled: $disabled'",
+					'函数 ' . $disabled . ' 被禁用',
 					$this->runInSafeMode($mode, $codeSpecify)
 				);
 			}
@@ -32,9 +32,12 @@ class ApiTest extends BaseTestCase {
 			
 			$mode = $this->getNewSafeMode();
 			$mode->runTime()->api()->disableFunctions($disabled);
+
+			$result = $this->runInSafeMode($mode, $codeSpecify);
+			$theOne = strpos($result, ' strtoupper ') ? 'strtoupper' : 'substr';
 			$this->assertContains(
-				"Uncaught exception 'Exception' with message 'function disabled: ",
-				$this->runInSafeMode($mode, $codeSpecify)
+				'函数 ' . $theOne . ' 被禁用',
+				$result
 			);
 		}
 	}
@@ -60,19 +63,20 @@ class ApiTest extends BaseTestCase {
 	}
 
 	public function testDisableClasses() {
+		$className = 'test';
 		$mode = $this->getNewSafeMode();
-		$mode->runTime()->api()->disableClasses('test');
+		$mode->runTime()->api()->disableClasses($className);
 
 		$codeSpecify = 'api/use_class_with_new';
-		$this->assertContains('class disabled', $this->runInSafeMode($mode, $codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
 
 		$codeSpecify = 'api/use_class_with_new_var';
-		$this->assertContains('class disabled', $this->runInSafeMode($mode, $codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
 
 		$codeSpecify = 'api/use_class_with_extend';
-		$this->assertContains('class disabled', $this->runInSafeMode($mode, $codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
 
 		$codeSpecify = 'api/use_class_with_static_call';
-		$this->assertContains('class disabled', $this->runInSafeMode($mode, $codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
 	}
 }
