@@ -5,8 +5,9 @@ function fn_check_function_call() {
 	$callingFile = $params[1];
 	unset($params[0], $params[1]);
 
-	if (!function_exists($functionName))
-		die('function not exist: ' . $functionName);
+	if (!function_exists($functionName)) {
+		trigger_error('函数 ' . $functionName . ' 不存在', E_USER_ERROR);
+	}
 
 	$newParams = array();
 	foreach ($params as $v) {

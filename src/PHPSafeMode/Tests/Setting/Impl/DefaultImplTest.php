@@ -7,7 +7,7 @@ use PHPSafeMode\Setting\Impl\DefaultImpl;
 
 class DefaultImplTest extends BaseTestCase {
 	private $setting;
-	
+
 	public function testDisabledFunctions1() {
 		$this->__testDisabledFunctions(1, 20);
 	}
@@ -104,9 +104,9 @@ class DefaultImplTest extends BaseTestCase {
 			if ($name == 'eval') $code = '<?php ' . $name . '("");';
 
 			if (function_exists($name)) {
-				$this->assertContains('function disabled', $this->runInSafeMode($mode, $code));
+				$this->assertContains('函数 ' . $name . ' 被禁用', $this->runInSafeMode($mode, $code));
 			} else {
-				$this->assertContains('function not exist', $this->runInSafeMode($mode, $code));
+				$this->assertContains('函数 ' . $name . ' 不存在', $this->runInSafeMode($mode, $code));
 			}
 		}
 	}
@@ -117,7 +117,7 @@ class DefaultImplTest extends BaseTestCase {
 		$mode = $this->getDefaultSettingSafeMode();
 		foreach ($this->getSetting()->getDisabledClasses() as $name) {
 			$code = '<?php $a = new ' . $name . ';';
-			$this->assertContains('class disabled', $this->runInSafeMode($mode, $code));
+			$this->assertContains('类 ' . $name . ' 被禁用', $this->runInSafeMode($mode, $code));
 		}
 	}
 
@@ -125,7 +125,7 @@ class DefaultImplTest extends BaseTestCase {
 		$mode = $this->getDefaultSettingSafeMode();
 		foreach ($this->getSetting()->getDisabledClasses() as $name) {
 			$code = '<?php $a = ' . $name . '::a();';
-			$this->assertContains('class disabled', $this->runInSafeMode($mode, $code));
+			$this->assertContains('类 ' . $name . ' 被禁用', $this->runInSafeMode($mode, $code));
 		}
 	}
 
@@ -137,7 +137,7 @@ class DefaultImplTest extends BaseTestCase {
 			$code = '<?php class OSDJFxcv extends ' . $name . ' {}';
 			if (class_exists($name)) {
 				if (!in_array($name, $finalClasses))
-					$this->assertContains('class disabled', $this->runInSafeMode($mode, $code));
+					$this->assertContains('类 ' . $name . ' 被禁用', $this->runInSafeMode($mode, $code));
 			} else {
 				$this->runInSafeMode($mode, $code);
 			}
@@ -146,6 +146,8 @@ class DefaultImplTest extends BaseTestCase {
 	
 	public function testUnsafeFileSystemFunctions() {
 		$mode = $this->getDefaultSettingSafeMode();
+
+		$errorMsg = '目录不存在，或在访问范围之外';
 		
 		foreach ($this->getSetting()->getUnsafeFileSystemFunctions() as $type => $functions) {
 			foreach ($functions as $name => $config) {
@@ -153,26 +155,26 @@ class DefaultImplTest extends BaseTestCase {
 				
 				if ($type == 'readDir') {
 					$code = '<?php ' . $name . '(' . $this->genereateParamString($config['readDir'], '/tmp') . ');';
-					$this->assertContains('path not safe', $this->runInSafeMode($mode, $code));
+					$this->assertContains($errorMsg, $this->runInSafeMode($mode, $code));
 				} elseif ($type == 'readFile') {
 					if (isset($config['writeFile'])) {continue;}
 					
 					$code = '<?php ' . $name . '(' . $this->genereateParamString($config['readFile'], '/tmp/somefile.txt') . ');';
-					$this->assertContains('path not safe', $this->runInSafeMode($mode, $code));
+					$this->assertContains($errorMsg, $this->runInSafeMode($mode, $code));
 				} elseif ($type == 'writeFile') {
 					if ($config['writeFile'] < 0) {continue;}
 					
 					$code = '<?php ' . $name . '(' . $this->genereateParamString($config['writeFile'], '/tmp/somefile.txt') . ');';
-					$this->assertContains('path not safe', $this->runInSafeMode($mode, $code));
+					$this->assertContains($errorMsg, $this->runInSafeMode($mode, $code));
 				} elseif ($type == 'createDir') {
 					$code = '<?php ' . $name . '(' . $this->genereateParamString($config['createDir'], '/tmp/somedir') . ');';
-					$this->assertContains('path not safe', $this->runInSafeMode($mode, $code));
+					$this->assertContains('上级' . $errorMsg, $this->runInSafeMode($mode, $code));
 				} elseif ($type == 'rmDir') {
 					$code = '<?php ' . $name . '(' . $this->genereateParamString($config['rmDir'], '/tmp/somedir') . ');';
-					$this->assertContains('path not safe', $this->runInSafeMode($mode, $code));
+					$this->assertContains($errorMsg, $this->runInSafeMode($mode, $code));
 				} elseif ($type == 'rmFile') {
 					$code = '<?php ' . $name . '(' . $this->genereateParamString($config['rmFile'], '/tmp/somefile.txt') . ');';
-					$this->assertContains('path not safe', $this->runInSafeMode($mode, $code));
+					$this->assertContains($errorMsg, $this->runInSafeMode($mode, $code));
 				}
 			}
 		}

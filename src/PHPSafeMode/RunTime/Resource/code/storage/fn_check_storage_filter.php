@@ -12,8 +12,9 @@ function fn_check_storage_filter($functionName, $callingFile, $params) {
 	if (!$got) return $params;
 
 	$checkCreateDirSafePath = function($callingFile, $paramConfig, $params) {
-		if (isset($params[$paramConfig['createDirRecursive']]) && $params[$paramConfig['createDirRecursive']] != false)
-			die('can not create Recursively');
+		if (isset($params[$paramConfig['createDirRecursive']]) && $params[$paramConfig['createDirRecursive']] != false) {
+			trigger_error('禁止递归创建目录', E_USER_ERROR);
+		}
 
 		$safePath = fn_get_storage_safe_path();
 
@@ -25,9 +26,14 @@ function fn_check_storage_filter($functionName, $callingFile, $params) {
 		} else {
 			$parentDir = realpath($base . '/' . dirname($dir));
 		}
-		if (!$parentDir || !is_dir($parentDir)) die('parent dir not exist');
-
-		if (strpos($parentDir, $safePath) !== 0) die('path not safe');
+		
+		$errorMsg = '上级目录不存在，或在访问范围之外';
+		if (!$parentDir || !is_dir($parentDir)) {
+			trigger_error($errorMsg, E_USER_ERROR);
+		}
+		if (strpos($parentDir, $safePath) !== 0) {
+			trigger_error($errorMsg. ' ', E_USER_ERROR);
+		}
 
 		$params[$paramConfig['createDir']] = $parentDir . '/' . basename($dir);
 		return $params;
@@ -44,9 +50,14 @@ function fn_check_storage_filter($functionName, $callingFile, $params) {
 		} else {
 			$dir = realpath($base . '/' . $dir);
 		}
-		if (!$dir || !is_dir($dir)) die('path not safe or not exist');
-
-		if (strpos($dir, $safePath) !== 0 || $dir == $safePath) die('path not safe');
+		
+		$errorMsg = '目录不存在，或在访问范围之外';
+		if (!$dir || !is_dir($dir)) {
+			trigger_error($errorMsg, E_USER_ERROR);
+		}
+		if (strpos($dir, $safePath) !== 0 || $dir == $safePath) {
+			trigger_error($errorMsg. ' ', E_USER_ERROR);
+		}
 
 		$params[$paramConfig['rmDir']] = $dir;
 		return $params;
@@ -63,17 +74,23 @@ function fn_check_storage_filter($functionName, $callingFile, $params) {
 		} else {
 			$dir = realpath($base . '/' . $dir);
 		}
-		if (!$dir || !is_dir($dir)) die('path not safe or not exist');
-
-		if (strpos($dir, $safePath) !== 0) die('path not safe');
+		
+		$errorMsg = '目录不存在，或在访问范围之外';
+		if (!$dir || !is_dir($dir)) {
+			trigger_error($errorMsg, E_USER_ERROR);
+		}
+		if (strpos($dir, $safePath) !== 0) {
+			trigger_error($errorMsg. ' ', E_USER_ERROR);
+		}
 
 		$params[$paramConfig['readDir']] = $dir;
 		return $params;
 	};
 	
 	$checkReadFileSafePath = function($checkReadDirSafePath, $callingFile, $paramConfig, $params) {
-		if (isset($paramConfig['includePath']) && isset($params[$paramConfig['includePath']]) && $params[$paramConfig['includePath']] != false)
-			die('can not use include path');
+		if (isset($paramConfig['includePath']) && isset($params[$paramConfig['includePath']]) && $params[$paramConfig['includePath']] != false) {
+			trigger_error('禁止使用 include_path 操作文件', E_USER_ERROR);
+		}
 		
 		$parsed = pathinfo($params[$paramConfig['readFile']]);
 		
@@ -85,8 +102,9 @@ function fn_check_storage_filter($functionName, $callingFile, $params) {
 	};
 	
 	$checkWriteFileSafePath = function($checkReadDirSafePath, $callingFile, $paramConfig, $params) {
-		if (isset($paramConfig['includePath']) && isset($params[$paramConfig['includePath']]) && $params[$paramConfig['includePath']] != false)
-			die('can not use include path');
+		if (isset($paramConfig['includePath']) && isset($params[$paramConfig['includePath']]) && $params[$paramConfig['includePath']] != false) {
+			trigger_error('禁止使用 include_path 操作文件', E_USER_ERROR);
+		}
 		
 		if ($paramConfig['writeFile'] < 0) return $params;
 		
@@ -128,7 +146,7 @@ function fn_check_storage_filter($functionName, $callingFile, $params) {
 			foreach ($pieces as $ext) {
 				$ext = strtolower($ext);
 				if (!in_array($ext, $allowed)) {
-					die('file type not allowed: ' . $ext);
+					trigger_error('操作的文件类型只允许 *.' . implode(" *.", $allowed), E_USER_ERROR);
 				}
 			}
 		}
@@ -173,8 +191,9 @@ function fn_check_storage_filter($functionName, $callingFile, $params) {
 			}
 		}
 		
-		if ($hasSize > $maxSize || $dataSize > $maxSize)
-			die('beyond max file size: ' . $maxSizeMegaByte . 'M');
+		if ($hasSize > $maxSize || $dataSize > $maxSize) {
+			trigger_error('文件大小不能超过 ' . $maxSizeMegaByte . 'M', E_USER_ERROR);
+		}
 	};
 	
 	$checkMaxFiles = function($callingFile, $paramConfig, $params) {
@@ -203,7 +222,9 @@ function fn_check_storage_filter($functionName, $callingFile, $params) {
 		$safePath = fn_get_storage_safe_path();
 		$hasFiles = __countFilesAndDir($safePath);
 		
-		if (($hasFiles + $creates) > $maxFiles) die('beyond max files: ' . $maxFiles);
+		if (($hasFiles + $creates) > $maxFiles) {
+			trigger_error('文件和文件夹总数不能超过 ' . $maxFiles . ' 个', E_USER_ERROR);
+		}
 	};
 
 	switch ($opType) {
