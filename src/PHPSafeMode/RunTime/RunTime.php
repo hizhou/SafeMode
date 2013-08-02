@@ -9,9 +9,17 @@ class RunTime {
 	
 	public function __construct($safePath) {
 		$this->generatorContainer = new GeneratorContainer();
-		
+
+		$this->env()->setSafePath($safePath);
 		$this->storage()->setSafePath($safePath);
 		$this->code()->setSafePath($safePath);
+	}
+	
+	/**
+	 * @return Resource\Env
+	 */
+	public function env() {
+		return $this->getResource('env');
 	}
 	
 	/**

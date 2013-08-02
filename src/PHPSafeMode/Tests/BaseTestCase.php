@@ -25,7 +25,8 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase {
 	}
 	
 	protected function runInOriginalMode($codeSpecify, $isDebug = false, $saveTo = 'tmp.php') {
-		return $this->scriptRunner()->runCode($this->codeProvider()->getCode($codeSpecify), $saveTo, $isDebug);
+		$code = strpos($codeSpecify, ' ') ? $codeSpecify : $this->codeProvider()->getCode($codeSpecify);
+		return $this->scriptRunner()->runCode($code, $saveTo, $isDebug);
 	}
 	
 
