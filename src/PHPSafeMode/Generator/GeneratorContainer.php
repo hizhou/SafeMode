@@ -39,9 +39,9 @@ class GeneratorContainer {
 		
 		$bootstrapSaveTo = $bootstrap->saveTo($bootstrapSaveTo);
 		
-		$code = '<?php ';
-		if ($bootstrapSaveTo) $code .= "require_once('$bootstrapSaveTo'); ";
-		$code .= $rewriter->generateCode();
+		$code = '<?php ' . $rewriter->generateCode(
+			$bootstrapSaveTo ? "<?php require_once('$bootstrapSaveTo');" : null
+		);
 		
 		file_put_contents($saveTo, $code);
 		

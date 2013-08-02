@@ -3,6 +3,7 @@ namespace PHPSafeMode\Rewriter\Convertor;
 
 class ClassNew extends \PHPParser_NodeVisitorAbstract {
 	private $functionName;
+	private $alias = array();
 	
 	public function __construct($functionName) {
 		$this->functionName = $functionName;
@@ -18,7 +19,15 @@ class ClassNew extends \PHPParser_NodeVisitorAbstract {
 	public function leaveNode(\PHPParser_Node $node) {
 		if ($node instanceof \PHPParser_Node_Expr_New) {
 			if ($node->class instanceof \PHPParser_Node_Name) {
-				$name = new \PHPParser_Node_Scalar_String($node->class->toString());
+				$className = $node->class->toString();
+				foreach ($this->alias as $k => $v) {
+					if (strtolower($className) == strtolower($k)) {
+						$className = $v;
+						break;
+					}
+				}
+				
+				$name = new \PHPParser_Node_Scalar_String($className);
 			} else {
 				$name = $node->class;
 			}
@@ -35,6 +44,8 @@ class ClassNew extends \PHPParser_NodeVisitorAbstract {
 				$args
 			);
 			return $newNode;
+		} elseif ($node instanceof \PHPParser_Node_Stmt_UseUse) {
+			$this->alias[$node->alias] = $node->name->toString();
 		}
 	}
 	

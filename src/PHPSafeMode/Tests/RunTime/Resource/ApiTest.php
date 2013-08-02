@@ -4,7 +4,6 @@ namespace PHPSafeMode\Tests\RunTime\Resource;
 use PHPSafeMode\Tests\BaseTestCase;
 
 class ApiTest extends BaseTestCase {
-
 	public function testDisableFunction() {
 		$disabledList = array('strtoupper', 'substr');
 
@@ -78,5 +77,24 @@ class ApiTest extends BaseTestCase {
 
 		$codeSpecify = 'api/use_class_with_static_call';
 		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+	}
+	
+	public function testDisableClassesByRename() {
+		$className = 'test';
+		$mode = $this->getNewSafeMode();
+		$mode->runTime()->api()->disableClasses($className);
+
+		$codeSpecify = 'api/use_class_with_new_rename';
+		$this->assertNotContains('被禁用', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+		
+		$codeSpecify = 'api/use_class_with_extend_rename';
+		$this->assertNotContains('被禁用', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+		
+		$codeSpecify = 'api/use_class_with_static_call_rename';
+		$this->assertNotContains('被禁用', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+		
 	}
 }

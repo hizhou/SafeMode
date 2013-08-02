@@ -1,6 +1,8 @@
 <?php
 namespace PHPSafeMode\Rewriter;
 
+use PHPSafeMode\Rewriter\Convertor\PrependCode;
+
 class Rewriter {
 	private $originalCode;
 	
@@ -18,8 +20,12 @@ class Rewriter {
 		$this->convertors[] = $convertor;
 	}
 	
-	public function generateCode() {
+	public function generateCode($prependCodes = null) {
 		$nodes = $this->parseCode($this->originalCode);
+
+		if ($prependCodes) {
+			$this->convertors[] = new PrependCode($this->parsePrependCodes($prependCodes));
+		}
 		
 		if ($this->convertors) {
 			$traverser = new \PHPParser_NodeTraverser;
@@ -39,5 +45,17 @@ class Rewriter {
 	private function parseCode($code) {
 		$phpParser = new \PHPParser_Parser(new \PHPParser_Lexer());
 		return $phpParser->parse($code);
+	}
+	
+	private function parsePrependCodes($codes) {
+		if (!is_array($codes)) $codes = array($codes);
+		
+		$nodes = array();
+		foreach ($codes as $code) {
+			foreach ($this->parseCode($code) as $node) {
+				$nodes[] = $node;
+			}
+		}
+		return $nodes;
 	}
 }
