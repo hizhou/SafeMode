@@ -7,7 +7,7 @@
         "psr-0": { "": "src/" }
     },
     "require": {
-        "nikic/php-parser": "0.9.3"
+        "nikic/php-parser": "0.9.*@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
