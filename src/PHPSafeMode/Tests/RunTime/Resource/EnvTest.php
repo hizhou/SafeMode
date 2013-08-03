@@ -139,7 +139,7 @@ class EnvTest extends BaseTestCase {
 	private function getHandleErrorSafeMode() {
 		$mode = $this->getNewSafeMode();
 		$mode->runTime()->env()->setDisplayErrors(true);
-		$mode->runTime()->env()->setErrorReporting(E_ALL);
+		$mode->runTime()->env()->setErrorReporting(E_ALL | E_STRICT);
 		$mode->runTime()->env()->setErrorHandler();
 		return $mode;
 	}

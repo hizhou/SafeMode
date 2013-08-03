@@ -18,9 +18,13 @@ class Env extends BaseResource {
 	}
 	
 	public function setDisplayErrors($isEnable) {
+		//For *nix system
+		$append = $isEnable ? '' : $this->generateCodeFromFile('env/expr_set_display_errors');
+
 		$isEnable = $isEnable ? "true" : "false";
+
 		$this->runTime()->generatorContainer()->add(
-			new ExpressionGenerator('expr_set_display_errors', 'ini_set("display_errors", ' . $isEnable . ');')
+			new ExpressionGenerator('expr_set_display_errors', 'ini_set("display_errors", ' . $isEnable . ');' . $append)
 		);
 	}
 	
