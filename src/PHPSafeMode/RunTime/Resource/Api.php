@@ -58,7 +58,7 @@ class Api extends BaseResource {
 		}
 		
 		foreach ($classes as $v) {
-			$v = strtolower($v);
+			$v = trim(strtolower($v), '\\');
 			$this->disableClasses[$v] = $v;
 		}
 		

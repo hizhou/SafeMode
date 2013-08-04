@@ -1,6 +1,11 @@
 <?php
-function fn_check_class_extend($className) {
-	$className = strtolower($className);
+function fn_check_class_extend($className, $namespace) {
+	$className = trim(strtolower($className), '\\');
+	$namespace = trim(strtolower($namespace), '\\');
+	if ($namespace != '') {
+		$tmp = ($namespace . '\\' . $className);
+		if (class_exists($tmp)) $className = $tmp;
+	}
 
 	$disables = fn_get_disabled_classes();
 

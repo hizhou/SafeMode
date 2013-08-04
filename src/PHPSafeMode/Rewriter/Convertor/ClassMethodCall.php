@@ -4,13 +4,16 @@ namespace PHPSafeMode\Rewriter\Convertor;
 class ClassMethodCall extends \PHPParser_NodeVisitorAbstract {
 	private $functionName;
 	private $alias = array();
+	private $namespace = '';
 	
 	public function __construct($functionName) {
 		$this->functionName = $functionName;
 	}
 	
 	public function beforeTraverse(array $nodes) {
-		//var_dump($nodes);return ;
+		if ($nodes[0] instanceof \PHPParser_Node_Stmt_Namespace) {
+			$this->namespace = $nodes[0]->name->toString();
+		}
 	}
 	
 	public function enterNode(\PHPParser_Node $node) {
@@ -35,6 +38,7 @@ class ClassMethodCall extends \PHPParser_NodeVisitorAbstract {
 			return $newNode;
 		} */
 		if ($node instanceof \PHPParser_Node_Expr_StaticCall) {
+			$isFully = ($node->class instanceof \PHPParser_Node_Name_FullyQualified) ? true : false;
 			if ($node->class instanceof \PHPParser_Node_Name) {
 				$className = $node->class->toString();
 				foreach ($this->alias as $k => $v) {
@@ -54,6 +58,7 @@ class ClassMethodCall extends \PHPParser_NodeVisitorAbstract {
 			$args[] = is_string($node->name) 
 				? new \PHPParser_Node_Scalar_String($node->name)
 				: $node->name;
+			$args[] = new \PHPParser_Node_Scalar_String($isFully ? '' : $this->namespace);
 
 			foreach ($node->args as $arg) {
 				$args[] = $arg;

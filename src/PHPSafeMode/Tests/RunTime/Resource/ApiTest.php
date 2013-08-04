@@ -97,4 +97,68 @@ class ApiTest extends BaseTestCase {
 		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
 		
 	}
+
+	public function testDisableClassInNamespace() {
+		$className = 'test\forinclude\aaa';
+		$mode = $this->getNewSafeMode();
+		$mode->runTime()->api()->disableClasses($className);
+
+		$codeSpecify = 'api/for_namespace_include';
+		$this->assertNotContains('error', $this->runInOriginalMode($codeSpecify, false, 'forinclude.php'));
+		$this->assertNotContains('error', $this->runInSafeMode($mode, $codeSpecify, false, 'forinclude.php'));
+
+		$codeSpecify = 'api/use_namespace_class_with_new';
+		$this->assertNotContains('error', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+
+		$codeSpecify = 'api/use_namespace_class_with_new_var';
+		$this->assertNotContains('error', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+
+		$codeSpecify = 'api/use_namespace_class_with_static_call';
+		$this->assertNotContains('error', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+
+		$codeSpecify = 'api/use_namespace_class_with_extend';
+		$this->assertNotContains('error', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+	}
+
+	public function testDisableFunctionInNamespace() {
+		$functionName = 'test\forinclude\bbb';
+		$mode = $this->getNewSafeMode();
+		$mode->runTime()->api()->disableFunctions($functionName);
+
+		$codeSpecify = 'api/for_namespace_include';
+		$this->assertNotContains('error', $this->runInOriginalMode($codeSpecify, false, 'forinclude.php'));
+		$this->assertNotContains('error', $this->runInSafeMode($mode, $codeSpecify, false, 'forinclude.php'));
+
+		$codeSpecify = 'api/function_namespace_call_general';
+		$this->assertNotContains('error', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('函数 ' . $functionName . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+
+		$codeSpecify = 'api/function_namespace_call_var';
+		$this->assertNotContains('error', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('函数 ' . $functionName . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+	}
+
+	public function testDisableFunctionCallNamespaceSamename() {
+		$functionName = 'var_dump';
+		$mode = $this->getNewSafeMode();
+		$mode->runTime()->api()->disableFunctions($functionName);
+
+		$codeSpecify = 'api/function_namespace_call_samename';
+		$this->assertContains('int(', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('函数 ' . $functionName . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+	}
+
+	public function testDisableClassNamespaceSamename() {
+		$className = 'datetime';
+		$mode = $this->getNewSafeMode();
+		$mode->runTime()->api()->disableClasses($className);
+
+		$codeSpecify = 'api/use_namespace_class_samename';
+		$this->assertContains('["timezone"]', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+	}
 }

@@ -1,9 +1,14 @@
 <?php
 function fn_check_function_call() {
 	$params = func_get_args();
-	$functionName = strtolower($params[0]);
+	$functionName = trim(strtolower($params[0]), '\\');
 	$callingFile = $params[1];
-	unset($params[0], $params[1]);
+	$namespace = trim(strtolower($params[2]), '\\');
+	if ($namespace != '') {
+		$tmp = ($namespace . '\\' . $functionName);
+		if (function_exists($tmp)) $functionName = $tmp;
+	}
+	unset($params[0], $params[1], $params[2]);
 
 	if (!function_exists($functionName)) {
 		trigger_error('函数 ' . $functionName . ' 不存在', E_USER_ERROR);
