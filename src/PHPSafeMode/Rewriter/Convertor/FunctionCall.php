@@ -30,7 +30,16 @@ class FunctionCall extends \PHPParser_NodeVisitorAbstract {
 					new \PHPParser_Node_Scalar_String($special),
 				)
 			);
-			return $newNode;
+			$newNode = $this->copyAttribute($newNode, $node, array('startPos', 'endPos'));
+			if ($special == '__halt_compiler') {
+				$newNode->setAttribute('operate', 'append');
+				$newNode->setAttribute('afterPos', $node->getAttribute('startPos') - 1);
+				$node->setAttribute('operate', 'remove');
+				return array($newNode, $node);
+			} else {
+				$newNode->setAttribute('operate', 'replace');
+				return $newNode;
+			}
 		} elseif ($node instanceof \PHPParser_Node_Expr_FuncCall) {
 			$isFully = ($node->name instanceof \PHPParser_Node_Name_FullyQualified) ? true : false;
 			if ($node->name instanceof \PHPParser_Node_Name) {
@@ -52,10 +61,18 @@ class FunctionCall extends \PHPParser_NodeVisitorAbstract {
 				new \PHPParser_Node_Name_FullyQualified(array($this->functionName)),
 				$args
 			);
-			return $newNode;
+			$newNode->setAttribute('operate', 'replace');
+			return $this->copyAttribute($newNode, $node, array('startPos', 'endPos'));
 		}
 	}
 	
 	public function afterTraverse(array $nodes) {
+	}
+
+	private function copyAttribute(\PHPParser_Node $to, \PHPParser_Node $from, array $attrs) {
+		foreach ($attrs as $attr) {
+			$to->setAttribute($attr, $from->getAttribute($attr));
+		}
+		return $to;
 	}
 }

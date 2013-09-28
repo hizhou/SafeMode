@@ -14,6 +14,8 @@ var_dump(new DateTime(111));
 // }
 // var_dump(new De(222));
 
+echo "1
+2";
 if(rand(0,1)) {
 	echo "extendsss:\r\n";
 	class De2 extends \DateTime {

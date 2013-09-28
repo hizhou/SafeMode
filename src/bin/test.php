@@ -22,7 +22,7 @@ $nodes = $phpParser->parse($code);
 
 
 $prettyPrinter = new \PHPSafeMode_EPHPParser_Printer();
-echo '<?php ' . $prettyPrinter->prettyPrint($nodes, $code);
+echo $prettyPrinter->prettyPrint($nodes, $code);
 
 
 echo "\r\n-------------\r\n";

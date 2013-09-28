@@ -11,6 +11,8 @@ class ScriptRunner {
 	public function run($path, $isDebug) {
 		if (!file_exists($path)) throw new \Exception('script not exists: ' . $path);
 		
+//TODO TEST
+$c = file_get_contents($path); if (strpos($c, '_NO_INDENT_')) {$this->debug($c);}
 		$output = $this->runPhpScript($path);
 
 		$result = implode("\r\n", $output);

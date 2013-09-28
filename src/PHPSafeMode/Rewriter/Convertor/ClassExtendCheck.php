@@ -39,6 +39,8 @@ class ClassExtendCheck extends \PHPParser_NodeVisitorAbstract {
 				new \PHPParser_Node_Name_FullyQualified(array($this->functionName)),
 				$args
 			);
+			$newNode->setAttribute('operate', 'append');
+			$newNode->setAttribute('afterPos', $node->getAttribute('endPos'));
 			return array($node, $newNode);
 		} elseif ($node instanceof \PHPParser_Node_Stmt_UseUse) {
 			$this->alias[$node->alias] = $node->name->toString();

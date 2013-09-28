@@ -39,7 +39,7 @@ class GeneratorContainer {
 		
 		$bootstrapSaveTo = $bootstrap->saveTo($bootstrapSaveTo);
 		
-		$code = '<?php ' . $rewriter->generateCode(
+		$code = $rewriter->generateCode(
 			$bootstrapSaveTo ? "<?php require_once('$bootstrapSaveTo');" : null
 		);
 		

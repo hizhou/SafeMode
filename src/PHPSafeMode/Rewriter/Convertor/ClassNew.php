@@ -48,12 +48,20 @@ class ClassNew extends \PHPParser_NodeVisitorAbstract {
 				new \PHPParser_Node_Name_FullyQualified(array($this->functionName)),
 				$args
 			);
-			return $newNode;
+			$newNode->setAttribute('operate', 'replace');
+			return $this->copyAttribute($newNode, $node, array('startPos', 'endPos'));
 		} elseif ($node instanceof \PHPParser_Node_Stmt_UseUse) {
 			$this->alias[$node->alias] = $node->name->toString();
 		}
 	}
 	
 	public function afterTraverse(array $nodes) {
+	}
+
+	private function copyAttribute(\PHPParser_Node $to, \PHPParser_Node $from, array $attrs) {
+		foreach ($attrs as $attr) {
+			$to->setAttribute($attr, $from->getAttribute($attr));
+		}
+		return $to;
 	}
 }

@@ -9,7 +9,6 @@ class FileInclude extends \PHPParser_NodeVisitorAbstract {
 	}
 	
 	public function beforeTraverse(array $nodes) {
-		//var_dump($nodes);return ;
 	}
 	
 	public function enterNode(\PHPParser_Node $node) {
@@ -25,6 +24,9 @@ class FileInclude extends \PHPParser_NodeVisitorAbstract {
 				new \PHPParser_Node_Name_FullyQualified(array($this->functionName)),
 				$args
 			);
+
+			$node->setAttribute('operate', 'replace');
+
 			return $node;
 		}
 	}

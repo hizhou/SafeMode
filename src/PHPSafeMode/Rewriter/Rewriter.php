@@ -36,23 +36,28 @@ class Rewriter {
 			$nodes = $traverser->traverse($nodes);
 		}
 		
-		$prettyPrinter = new \PHPParser_PrettyPrinter_Zend();
-		return $prettyPrinter->prettyPrint($nodes);
+		$prettyPrinter = new \PHPSafeMode_EPHPParser_Printer();
+		return $prettyPrinter->prettyPrint($nodes, $this->originalCode);
+		
+		//$prettyPrinter = new \PHPParser_PrettyPrinter_Zend();
+		//return $prettyPrinter->prettyPrint($nodes);
 	}
 	
 	
 	
 	private function parseCode($code) {
-		$phpParser = new \PHPParser_Parser(new \PHPParser_Lexer());
+		$phpParser = new \PHPParser_Parser(new \PHPSafeMode_EPHPParser_Lexer());
 		return $phpParser->parse($code);
 	}
 	
 	private function parsePrependCodes($codes) {
 		if (!is_array($codes)) $codes = array($codes);
 		
+		$phpParser = new \PHPParser_Parser(new \PHPParser_Lexer());
+		
 		$nodes = array();
 		foreach ($codes as $code) {
-			foreach ($this->parseCode($code) as $node) {
+			foreach ($phpParser->parse($code) as $node) {
 				$nodes[] = $node;
 			}
 		}
