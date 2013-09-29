@@ -1,6 +1,6 @@
 <?php
 
-class PHPSafeMode_EPHPParser_NodeVisitor extends PHPParser_NodeVisitorAbstract {
+class PHPSafeMode_EPHPParser_NodeVisitor extends \PHPParser_NodeVisitorAbstract {
 	private $tokens;
 	private $printer;
 
@@ -8,11 +8,11 @@ class PHPSafeMode_EPHPParser_NodeVisitor extends PHPParser_NodeVisitorAbstract {
 
 	private $appends = array();
 	private $replaces = array();
+	private $skips = array();
 	
-	public function __construct($code, PHPParser_PrettyPrinterAbstract $printer) {
+	public function __construct($code) {
 		$this->tokens = @token_get_all($code);
-		
-		$this->printer = $printer;
+		$this->printer = new PHPSafeMode_EPHPParser_PiecePrinter();
 	}
 
 	public function getNewCode() {
@@ -23,6 +23,19 @@ class PHPSafeMode_EPHPParser_NodeVisitor extends PHPParser_NodeVisitorAbstract {
 	}
 	
 	public function enterNode(\PHPParser_Node $node) {
+		if ($node instanceof \PHPParser_Node_Scalar_Encapsed
+			|| $node instanceof \PHPParser_Node_Scalar_String
+			|| $node instanceof \PHPParser_Node_Stmt_HaltCompiler
+			|| $node instanceof \PHPParser_Node_Stmt_InlineHTML
+		) {
+			$startPos = $node->getAttribute('startPos');
+			$endPos = $node->getAttribute('endPos');
+			
+			$this->skips[$startPos . '-' . $endPos] = array(
+				'start' => $startPos, 
+				'end' => $endPos,
+			);
+		}
 	}
 	
 	public function leaveNode(\PHPParser_Node $node) {
@@ -49,6 +62,10 @@ class PHPSafeMode_EPHPParser_NodeVisitor extends PHPParser_NodeVisitorAbstract {
 		if ($startPos !== $endPos) {
 			return ;
 		}
+		
+		if ($this->isPosSkiped($startPos)) {
+			return ;
+		}
 
 		if ($operate === 'remove') {
 			$this->tokens[$startPos] = '';
@@ -59,7 +76,7 @@ class PHPSafeMode_EPHPParser_NodeVisitor extends PHPParser_NodeVisitorAbstract {
 	}
 
 	private function generateCode(\PHPParser_Node $node) {
-		return $this->printer->{'p' . $node->getType()}($node);
+		return $this->printer->p($node);
 	}
 	
 	public function afterTraverse(array $nodes) {
@@ -99,5 +116,16 @@ exit;
 				return $item;
 			}
 		}
+	}
+	
+	private function isPosSkiped($pos) {
+		if (!$this->skips) return false;
+		
+		foreach ($this->skips as $item) {
+			if ($pos >= $item['start'] && $pos <= $item['end']) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

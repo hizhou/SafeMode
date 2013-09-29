@@ -17,13 +17,6 @@ class PHPSafeMode_EPHPParser_Lexer extends PHPParser_Lexer
 
         while (isset($this->tokens[++$this->pos])) {
             $token = $this->tokens[$this->pos];
-            
-            //$white = $this->getFrontWhiteSpace($this->pos);
-            //if ($white !== null) $startAttributes['before'] = $white;
-            
-            //$white = $this->getBehindWhiteSpace($this->pos);
-            //if ($white !== null) $startAttributes['after'] = $white;
-            
 
             if (is_string($token)) {
             	$startAttributes['startPos'] = $this->pos;
@@ -65,31 +58,4 @@ class PHPSafeMode_EPHPParser_Lexer extends PHPParser_Lexer
         // 0 is the EOF token
         return 0;
     }
-    
-    /*
-    private function getFrontWhiteSpace($pos) {
-    	if (!isset($this->tokens[$pos - 1])) return null;
-    	
-    	$token = $this->tokens[$pos - 1];
-    	
-    	if ($token[0] === T_OPEN_TAG) {
-    		if (strpos($token[1], '<?php') !== false)
-    			return str_replace('<?php', '', $token[1]);
-    	} elseif ($token[0] === T_WHITESPACE) {
-    		return $this->getFrontWhiteSpace($pos - 1) . $token[1];
-    	}
-    	
-    	return null;
-    }
-    
-    private function getBehindWhiteSpace($pos) {
-    	if (!isset($this->tokens[$pos + 1])) return null;
-    	
-    	$token = $this->tokens[$pos + 1];
-    	if ($token[0] !== T_WHITESPACE) return null;
-    	
-    	return $token[1];
-    }
-    */
-
 }

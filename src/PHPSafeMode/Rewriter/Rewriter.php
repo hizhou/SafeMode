@@ -36,11 +36,7 @@ class Rewriter {
 			$nodes = $traverser->traverse($nodes);
 		}
 		
-		$prettyPrinter = new \PHPSafeMode_EPHPParser_Printer();
-		return $prettyPrinter->prettyPrint($nodes, $this->originalCode);
-		
-		//$prettyPrinter = new \PHPParser_PrettyPrinter_Zend();
-		//return $prettyPrinter->prettyPrint($nodes);
+		return $this->getPrinter()->prettyPrint($nodes, $this->originalCode);
 	}
 	
 	
@@ -62,5 +58,9 @@ class Rewriter {
 			}
 		}
 		return $nodes;
+	}
+	
+	private function getPrinter() {
+		return \PHPSafeMode_EPHPParser_Printer::getInstance();
 	}
 }

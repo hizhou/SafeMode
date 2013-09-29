@@ -161,4 +161,24 @@ class ApiTest extends BaseTestCase {
 		$this->assertContains('["timezone"]', $this->runInOriginalMode($codeSpecify));
 		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
 	}
+
+	public function testDisableFunctionCallInMultiNamespace() {
+		$functionName = 'var_dump';
+		$mode = $this->getNewSafeMode();
+		$mode->runTime()->api()->disableFunctions($functionName);
+	
+		$codeSpecify = 'api/function_namespace_call_multinamespace';
+		$this->assertContains('int(', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('函数 ' . $functionName . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+	}
+	
+	public function testDisableClassInMultiNamespace() {
+		$className = 'datetime';
+		$mode = $this->getNewSafeMode();
+		$mode->runTime()->api()->disableClasses($className);
+	
+		$codeSpecify = 'api/use_namespace_class_multinamespace';
+		$this->assertContains('["timezone"]', $this->runInOriginalMode($codeSpecify));
+		$this->assertContains('类 ' . $className . ' 被禁用', $this->runInSafeMode($mode, $codeSpecify));
+	}
 }

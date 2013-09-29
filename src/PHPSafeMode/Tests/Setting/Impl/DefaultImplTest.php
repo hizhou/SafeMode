@@ -7,6 +7,25 @@ use PHPSafeMode\Setting\Impl\DefaultImpl;
 
 class DefaultImplTest extends BaseTestCase {
 	private $setting;
+	
+	public function testDisabledEval() {
+		$mode = $this->getDefaultSettingSafeMode();
+	
+		$name = 'eval';
+		$code = '<?php ' . $name . '("");';
+		
+		$this->assertExecuteDisabledFunction($name, $mode, $code);
+	}
+	
+	public function testDisabledHaltCompiler() {
+		$mode = $this->getDefaultSettingSafeMode();
+	
+		$name = '__halt_compiler';
+		$code = '<?php ' . $name . '();';
+	
+		//TODO test it
+		//$this->assertExecuteDisabledFunction($name, $mode, $code);
+	}
 
 	public function testDisabledFunctions1() {
 		$this->__testDisabledFunctions(1, 20);
@@ -100,14 +119,19 @@ class DefaultImplTest extends BaseTestCase {
 		$offset = ($step - 1) * $average;
 		
 		foreach (array_slice($disables, $offset, $average) as $name) {
+			if (in_array($name, array('eval', '__halt_compiler'))) {continue;}
+			
 			$code = '<?php ' . $name . '();';
-			if ($name == 'eval') $code = '<?php ' . $name . '("");';
 
-			if (function_exists($name)) {
-				$this->assertContains('函数 ' . $name . ' 被禁用', $this->runInSafeMode($mode, $code));
-			} else {
-				$this->assertContains('函数 ' . $name . ' 不存在', $this->runInSafeMode($mode, $code));
-			}
+			$this->assertExecuteDisabledFunction($name, $mode, $code);
+		}
+	}
+	
+	private function assertExecuteDisabledFunction($name, $mode, $code) {
+		if (function_exists($name)) {
+			$this->assertContains('函数 ' . $name . ' 被禁用', $this->runInSafeMode($mode, $code));
+		} else {
+			$this->assertContains('函数 ' . $name . ' 不存在', $this->runInSafeMode($mode, $code));
 		}
 	}
 

@@ -1,27 +1,24 @@
 <?php
 namespace PHPSafeMode\Rewriter\Convertor;
 
-class FunctionCall extends \PHPParser_NodeVisitorAbstract {
+class FunctionCall extends BaseConvertor {
 	private $functionName;
-	private $namespace = '';
 	
 	public function __construct($functionName) {
 		$this->functionName = $functionName;
 	}
 	
 	public function beforeTraverse(array $nodes) {
-		if ($nodes[0] instanceof \PHPParser_Node_Stmt_Namespace) {
-			$this->namespace = $nodes[0]->name->toString();
-		}
 	}
 	
 	public function enterNode(\PHPParser_Node $node) {
+		$this->setCurrentNamespace($node);
 	}
 	
 	public function leaveNode(\PHPParser_Node $node) {
 		$special = '';
 		if ($node instanceof \PHPParser_Node_Expr_Eval) $special = 'eval';
-		if ($node instanceof \PHPParser_Node_Stmt_HaltCompiler) $special = '__halt_compiler';
+		//if ($node instanceof \PHPParser_Node_Stmt_HaltCompiler) $special = '__halt_compiler';
 
 		if ($special) {
 			$newNode = new \PHPParser_Node_Expr_FuncCall(
@@ -34,8 +31,7 @@ class FunctionCall extends \PHPParser_NodeVisitorAbstract {
 			if ($special == '__halt_compiler') {
 				$newNode->setAttribute('operate', 'append');
 				$newNode->setAttribute('afterPos', $node->getAttribute('startPos') - 1);
-				$node->setAttribute('operate', 'remove');
-				return array($newNode, $node);
+				return $newNode;
 			} else {
 				$newNode->setAttribute('operate', 'replace');
 				return $newNode;
@@ -67,12 +63,5 @@ class FunctionCall extends \PHPParser_NodeVisitorAbstract {
 	}
 	
 	public function afterTraverse(array $nodes) {
-	}
-
-	private function copyAttribute(\PHPParser_Node $to, \PHPParser_Node $from, array $attrs) {
-		foreach ($attrs as $attr) {
-			$to->setAttribute($attr, $from->getAttribute($attr));
-		}
-		return $to;
 	}
 }

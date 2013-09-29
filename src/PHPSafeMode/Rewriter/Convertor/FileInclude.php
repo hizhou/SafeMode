@@ -1,7 +1,7 @@
 <?php
 namespace PHPSafeMode\Rewriter\Convertor;
 
-class FileInclude extends \PHPParser_NodeVisitorAbstract {
+class FileInclude extends BaseConvertor {
 	private $functionName;
 	
 	public function __construct($functionName) {

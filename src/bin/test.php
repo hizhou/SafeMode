@@ -7,21 +7,19 @@ echo "\r\n-------------\r\n";
 
 
 $code = '<?php
-  $a    
-=        
-            "bbb"   ;
-		
-   $c = //comment   
-		
-     1;
-$d =array(1,2,"a"=> 34 , 5);
-	$e=&$d;';
+namespace Foo;
+function foo(){
+echo "\r\n";
+}
+
+namespace Bar;
+function bar(){}';
 
 $phpParser = new \PHPParser_Parser(new \PHPSafeMode_EPHPParser_Lexer());
 $nodes = $phpParser->parse($code);
+var_dump($nodes);
 
-
-$prettyPrinter = new \PHPSafeMode_EPHPParser_Printer();
+$prettyPrinter = \PHPSafeMode_EPHPParser_Printer::getInstance();
 echo $prettyPrinter->prettyPrint($nodes, $code);
 
 

@@ -1,7 +1,7 @@
 <?php
 namespace PHPSafeMode\Rewriter\Convertor;
 
-class PrependCode extends \PHPParser_NodeVisitorAbstract {
+class PrependCode extends BaseConvertor {
 	private $prependNodes;
 
 	public function __construct($prependNodes) {

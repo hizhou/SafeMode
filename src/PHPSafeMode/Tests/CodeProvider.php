@@ -3,15 +3,16 @@ namespace PHPSafeMode\Tests;
 
 class CodeProvider {
 	private $basePath;
-	private $codeExt = 'php';
+	private $codeExt;
 	
-	public function __construct() {
-		$this->basePath = __DIR__ . '/code';
+	public function __construct($basePath = null, $codeExt = null) {
+		$this->basePath = $basePath === null ? (__DIR__ . '/code') : rtrim($basePath, '\\/');
+		$this->codeExt = $codeExt === null ? 'php' : $codeExt;
 	}
 	
 	public function getCode($specify) {
 		$specify = trim($specify, '\\/');
-		$file = $this->basePath . '/' . $specify . '.php';
+		$file = $this->basePath . '/' . $specify . '.' . $this->codeExt;
 		if (!file_exists($file)) throw new TestException('code file not exsits: ' . $file);
 		
 		return file_get_contents($file);

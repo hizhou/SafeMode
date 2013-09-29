@@ -1,22 +1,19 @@
 <?php
 namespace PHPSafeMode\Rewriter\Convertor;
 
-class ClassExtendCheck extends \PHPParser_NodeVisitorAbstract {
+class ClassExtendCheck extends BaseConvertor {
 	private $functionName;
 	private $alias = array();
-	private $namespace = '';
 	
 	public function __construct($functionName) {
 		$this->functionName = $functionName;
 	}
 	
 	public function beforeTraverse(array $nodes) {
-		if ($nodes[0] instanceof \PHPParser_Node_Stmt_Namespace) {
-			$this->namespace = $nodes[0]->name->toString();
-		}
 	}
 	
 	public function enterNode(\PHPParser_Node $node) {
+		$this->setCurrentNamespace($node);
 	}
 	
 	public function leaveNode(\PHPParser_Node $node) {

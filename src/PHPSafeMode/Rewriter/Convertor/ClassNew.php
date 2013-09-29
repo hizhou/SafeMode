@@ -1,22 +1,19 @@
 <?php
 namespace PHPSafeMode\Rewriter\Convertor;
 
-class ClassNew extends \PHPParser_NodeVisitorAbstract {
+class ClassNew extends BaseConvertor {
 	private $functionName;
 	private $alias = array();
-	private $namespace = '';
 	
 	public function __construct($functionName) {
 		$this->functionName = $functionName;
 	}
 	
 	public function beforeTraverse(array $nodes) {
-		if ($nodes[0] instanceof \PHPParser_Node_Stmt_Namespace) {
-			$this->namespace = $nodes[0]->name->toString();
-		}
 	}
 	
 	public function enterNode(\PHPParser_Node $node) {
+		$this->setCurrentNamespace($node);
 	}
 	
 	public function leaveNode(\PHPParser_Node $node) {
@@ -56,12 +53,5 @@ class ClassNew extends \PHPParser_NodeVisitorAbstract {
 	}
 	
 	public function afterTraverse(array $nodes) {
-	}
-
-	private function copyAttribute(\PHPParser_Node $to, \PHPParser_Node $from, array $attrs) {
-		foreach ($attrs as $attr) {
-			$to->setAttribute($attr, $from->getAttribute($attr));
-		}
-		return $to;
 	}
 }

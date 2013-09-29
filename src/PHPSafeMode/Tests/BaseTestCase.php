@@ -19,13 +19,15 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase {
 	
 
 	protected function runInSafeMode(SafeMode $mode, $codeSpecify, $isDebug = false, $saveTo = 'index.php', $bootstrapSaveTo = 'bootstrap.php') {
-		$code = strpos($codeSpecify, ' ') ? $codeSpecify : $this->codeProvider()->getCode($codeSpecify);
+		$code = $this->isSpecifyActuallyCode($codeSpecify) 
+			? $codeSpecify : $this->codeProvider()->getCode($codeSpecify);
 		$file = $mode->generateSafeCode($code, $saveTo, $bootstrapSaveTo);
 		return $this->scriptRunner()->run($file, $isDebug);
 	}
 	
 	protected function runInOriginalMode($codeSpecify, $isDebug = false, $saveTo = 'tmp.php') {
-		$code = strpos($codeSpecify, ' ') ? $codeSpecify : $this->codeProvider()->getCode($codeSpecify);
+		$code = $this->isSpecifyActuallyCode($codeSpecify) 
+			? $codeSpecify : $this->codeProvider()->getCode($codeSpecify);
 		return $this->scriptRunner()->runCode($code, $saveTo, $isDebug);
 	}
 	
@@ -54,5 +56,10 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase {
 			$this->scriptRunner = new ScriptRunner($this->envProvider()->getOriginPath());
 		}
 		return $this->scriptRunner;
+	}
+	
+	
+	private function isSpecifyActuallyCode($codeSpecify) {
+		return strpos($codeSpecify, ' ') || strpos($codeSpecify, "\n");
 	}
 }
