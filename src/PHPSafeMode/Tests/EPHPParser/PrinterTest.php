@@ -35,13 +35,17 @@ class PrinterTest extends BaseTestCase {
 		$drops = array(
 			'parser/stmt/function/generator',
 			'parser/stmt/loop/for',
+			'parser/stmt/class/trait',
+			'parser/stmt/haltCompiler',
+			'parser/stmt/namespace/outsideStmt',
 		);
 		if (in_array($specify, $drops)) {
 			return null;
 		}
 		
 		$filters = array(
-			'parser/scalar/int' => array('@@{ PHP_INT_MAX     }@@;', '@@{ PHP_INT_MAX + 1 }@@;'),
+			'parser/scalar/int' => array('@@{ PHP_INT_MAX     }@@;', '@@{ PHP_INT_MAX + 1 }@@;', '0b111000111000;'),
+			'parser/scalar/float' => array('0b1111111111111111111111111111111111111111111111111111111111111111;'),
 			'parser/stmt/blocklessStatement' => array('for (;;) $foo;'),
 			'parser/stmt/tryCatch' => array(' finally {
     doFinally();
