@@ -16,6 +16,10 @@ class FunctionCall extends BaseConvertor {
 	}
 	
 	public function leaveNode(\PHPParser_Node $node) {
+		if ($node instanceof \PHPParser_Node_Expr_ShellExec) {
+			
+		}
+		
 		$special = '';
 		if ($node instanceof \PHPParser_Node_Expr_Eval) $special = 'eval';
 		//if ($node instanceof \PHPParser_Node_Stmt_HaltCompiler) $special = '__halt_compiler';
